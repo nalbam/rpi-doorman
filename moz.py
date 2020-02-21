@@ -3,11 +3,11 @@ import glob
 import re
 
 cam = 0
-for file in glob.glob("/dev/video*"):
-    m = re.search("/dev/video(.+?)", file)
-    if m:
-        cam = m.group(1)
-        break
+# for file in glob.glob("/dev/video*"):
+#     m = re.search("/dev/video(.+?)", file)
+#     if m:
+#         cam = m.group(1)
+#         break
 
 # Get a reference to webcam #0 (the default one)
 cap = cv2.VideoCapture(cam)
