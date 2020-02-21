@@ -1,7 +1,16 @@
 import cv2
+import glob
+import re
+
+cam = 0
+for file in glob.glob("/dev/video*"):
+    m = re.search("/dev/video(.+?)", file)
+    if m:
+        cam = m.group(1)
+        break
 
 # Get a reference to webcam #0 (the default one)
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(cam)
 
 frame_w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 frame_h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
