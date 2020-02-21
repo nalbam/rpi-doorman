@@ -9,9 +9,6 @@ cam = 0
 #         cam = m.group(1)
 #         break
 
-cv2.namedWindow("screen", cv2.WINDOW_NORMAL)
-cv2.setWindowProperty("screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-
 # Get a reference to webcam #0 (the default one)
 cap = cv2.VideoCapture(cam)
 
@@ -28,14 +25,17 @@ while True:
     # Resize to 8x8
     frame = cv2.resize(frame, (0, 0), fx=rate, fy=rate)
 
-    w1 = int((int(frame_w * rate) - 8) / 2)
-    w2 = 8 + w1
-    frame = frame[0:8, w1:w2]
+    # w1 = int((int(frame_w * rate) - 8) / 2)
+    # w2 = 8 + w1
+    # frame = frame[0:8, w1:w2]
 
     frame = cv2.resize(frame, (0, 0), fx=bigg, fy=bigg, interpolation=cv2.INTER_AREA)
 
     # Display the resulting image
     cv2.imshow("Video", frame)
+
+    cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
+    cv2.setWindowProperty("Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord("q"):
