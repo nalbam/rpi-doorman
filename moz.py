@@ -1,6 +1,7 @@
 import cv2
-import glob
-import re
+
+# import glob
+# import re
 
 cam = 0
 # for file in glob.glob("/dev/video*"):

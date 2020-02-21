@@ -1,125 +1,47 @@
-"""
-  This example is for Raspberry Pi (Linux) only!
-  It will not work on microcontrollers running CircuitPython!
-"""
+import cv2
 
-import os
-import math
-import time
+# import glob
+# import re
 
-import busio
-import board
+cam = 0
+# for file in glob.glob("/dev/video*"):
+#     m = re.search("/dev/video(.+?)", file)
+#     if m:
+#         cam = m.group(1)
+#         break
 
-import numpy as np
-import pygame
+# Get a reference to webcam #0 (the default one)
+cap = cv2.VideoCapture(cam)
 
-from scipy.interpolate import griddata
+frame_w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+frame_h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-from colour import Color
+rate = 8 / frame_h
+bigg = 400 / 8
 
-import adafruit_amg88xx
+while True:
+    # Grab a single frame of video
+    ret, frame = cap.read()
 
-i2c_bus = busio.I2C(board.SCL, board.SDA)
+    # # Resize to 8x8
+    # frame = cv2.resize(frame, (0, 0), fx=rate, fy=rate)
 
-# low range of the sensor (this will be blue on the screen)
-MINTEMP = 26.0
+    # w1 = int((int(frame_w * rate) - 8) / 2)
+    # w2 = 8 + w1
+    # frame = frame[0:8, w1:w2]
 
-# high range of the sensor (this will be red on the screen)
-MAXTEMP = 32.0
+    # frame = cv2.resize(frame, (0, 0), fx=bigg, fy=bigg, interpolation=cv2.INTER_AREA)
 
-# how many color values we can have
-COLORDEPTH = 1024
+    # Display the resulting image
+    cv2.imshow("Video", frame)
 
+    cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
+    cv2.setWindowProperty("Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-# some utility functions
-def constrain(val, min_val, max_val):
-    return min(max_val, max(min_val, val))
+    # Hit 'q' on the keyboard to quit!
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
 
-
-def map_value(x, in_min, in_max, out_min, out_max):
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-
-
-def run():
-    os.putenv("SDL_FBDEV", "/dev/fb1")
-
-    pygame.init()
-
-    # initialize the sensor
-    sensor = adafruit_amg88xx.AMG88XX(i2c_bus)
-
-    # pylint: disable=invalid-slice-index
-    points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]
-    grid_x, grid_y = np.mgrid[0:7:32j, 0:7:32j]
-    # pylint: enable=invalid-slice-index
-
-    # sensor is an 8x8 grid so lets do a square
-    height = 240
-    width = 240
-
-    # the list of colors we can choose from
-    blue = Color("indigo")
-    colors = list(blue.range_to(Color("red"), COLORDEPTH))
-
-    # create the array of colors
-    colors = [(int(c.red * 255), int(c.green * 255), int(c.blue * 255)) for c in colors]
-
-    displayPixelWidth = width / 30
-    displayPixelHeight = height / 30
-
-    lcd = pygame.display.set_mode((width, height))
-
-    lcd.fill((255, 0, 0))
-    pygame.display.update()
-
-    pygame.mouse.set_visible(False)
-
-    lcd.fill((0, 0, 0))
-    pygame.display.update()
-
-    # let the sensor initialize
-    time.sleep(0.1)
-
-    run = True
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                break
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE] or keys[pygame.K_q]:
-            run = False
-
-        if run == False:
-            break
-
-        # read the pixels
-        pixels = []
-        for row in sensor.pixels:
-            pixels = pixels + row
-        pixels = [map_value(p, MINTEMP, MAXTEMP, 0, COLORDEPTH - 1) for p in pixels]
-
-        # perform interpolation
-        bicubic = griddata(points, pixels, (grid_x, grid_y), method="cubic")
-
-        # draw everything
-        for ix, row in enumerate(bicubic):
-            for jx, pixel in enumerate(row):
-                pygame.draw.rect(
-                    lcd,
-                    colors[constrain(int(pixel), 0, COLORDEPTH - 1)],
-                    (
-                        displayPixelHeight * ix,
-                        displayPixelWidth * jx,
-                        displayPixelHeight,
-                        displayPixelWidth,
-                    ),
-                )
-
-        pygame.display.update()
-
-    pygame.quit()
-
-
-run()
+# Release handle to the webcam
+cap.release()
+cv2.destroyAllWindows()
