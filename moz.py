@@ -9,6 +9,9 @@ cam = 0
 #         cam = m.group(1)
 #         break
 
+cv2.namedWindow("screen", cv2.WINDOW_NORMAL)
+cv2.setWindowProperty("screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
 # Get a reference to webcam #0 (the default one)
 cap = cv2.VideoCapture(cam)
 
