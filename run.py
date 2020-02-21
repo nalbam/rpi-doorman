@@ -22,10 +22,10 @@ import adafruit_amg88xx
 i2c_bus = busio.I2C(board.SCL, board.SDA)
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 26.0
+MINTEMP = 33.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 32.0
+MAXTEMP = 39.0
 
 # how many color values we can have
 COLORDEPTH = 1024
@@ -54,8 +54,8 @@ def run():
     # pylint: enable=invalid-slice-index
 
     # sensor is an 8x8 grid so lets do a square
-    height = 240
     width = 240
+    height = 240
 
     # the list of colors we can choose from
     blue = Color("indigo")
