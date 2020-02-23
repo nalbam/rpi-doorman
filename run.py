@@ -25,7 +25,7 @@ i2c_bus = busio.I2C(board.SCL, board.SDA)
 MINTEMP = 22.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 30.0
+MAXTEMP = 28.0
 
 # how many color values we can have
 COLORDEPTH = 1024
