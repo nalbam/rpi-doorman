@@ -22,7 +22,7 @@ import adafruit_amg88xx
 i2c_bus = busio.I2C(board.SCL, board.SDA)
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 10.0
+MINTEMP = 16.0
 
 # high range of the sensor (this will be red on the screen)
 MAXTEMP = 30.0
