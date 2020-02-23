@@ -3,8 +3,11 @@
 ## Install Python Software
 
 ```bash
-sudo apt-get install -y python-scipy python-pygame
-sudo pip3 install colour
+sudo apt install -y python-scipy python-pygame
+
+pip3 install colour
+pip3 install adafruit-blinka
+pip3 install adafruit_amg88xx
 ```
 
 ## Test
