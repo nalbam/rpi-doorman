@@ -25,4 +25,5 @@ pip3 install adafruit-circuitpython-amg88xx
 sudo i2cdetect -y 1
 ```
 
-* <https://learn.adafruit.com/adafruit-amg8833-8x8-thermal-camera-sensor/raspberry-pi-thermal-camera>
+* <https://learn.adafruit.com/adafruit-amg8833-8x8-thermal-camera-sensor/python-circuitpython>
+* <https://github.com/adafruit/Adafruit_CircuitPython_AMG88xx>
