@@ -1,5 +1,14 @@
 # rpi-thermal
 
+## raspberry pi config
+
+```bash
+sudo raspi-config
+
+Interfacing Options -> Camera
+Interfacing Options -> I2C
+```
+
 ## Install Python Software
 
 ```bash
@@ -7,7 +16,7 @@ sudo apt install -y python-scipy python-pygame
 
 pip3 install colour
 pip3 install adafruit-blinka
-pip3 install adafruit_amg88xx
+pip3 install adafruit-circuitpython-amg88xx
 ```
 
 ## Test
