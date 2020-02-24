@@ -18,10 +18,10 @@ from botocore.session import Session
 
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 23.0
+MINTEMP = 24.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 31.0
+MAXTEMP = 32.0
 
 # how many color values we can have
 COLORDEPTH = 1024
@@ -43,7 +43,7 @@ def parse_args():
     p.add_argument("--min-temp", type=float, default=MINTEMP, help="height")
     p.add_argument("--max-temp", type=float, default=MAXTEMP, help="height")
     p.add_argument("--bucket-name", default=BUCKET_NAME, help="bucket name")
-    p.add_argument("--alpha", type=float, default=0.9, help="alpha")
+    p.add_argument("--alpha", type=float, default=1.0, help="alpha")
     return p.parse_args()
 
 
@@ -186,15 +186,15 @@ def main():
 
             cv2.imwrite(key, frame)
 
-            # # create a s3 file key
-            # _, jpg_data = cv2.imencode(".jpg", frame)
-            # res = s3.put_object(
-            #     ACL="public-read",
-            #     Body=jpg_data.tostring(),
-            #     Bucket=args.bucket_name,
-            #     Key=key,
-            # )
-            # print(res)
+            # create a s3 file key
+            _, jpg_data = cv2.imencode(".jpg", frame)
+            res = s3.put_object(
+                ACL="public-read",
+                Body=jpg_data.tostring(),
+                Bucket=args.bucket_name,
+                Key=key,
+            )
+            print(res)
 
         # Display the resulting image
         cv2.imshow("Video", frame)
