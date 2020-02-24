@@ -176,8 +176,13 @@ def main():
         if detected:
             print(detected)
 
+            incoming = "./incoming"
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S.%f") + ".jpg"
-            key = "incoming/{}".format(filename)
+
+            if os.path.isdir(incoming) == False:
+                os.mkdir(incoming)
+
+            key = "{}/{}".format(incoming, filename)
 
             cv2.imwrite(key, frame)
 
