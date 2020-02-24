@@ -177,7 +177,7 @@ def main():
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S.%f") + ".jpg"
             key = "incoming/{}".format(filename)
 
-            cv2.imwrite(filename, frame)
+            cv2.imwrite(key, frame)
 
             # # create a s3 file key
             # _, jpg_data = cv2.imencode(".jpg", frame)

@@ -12,7 +12,7 @@ Interfacing Options -> I2C
 ## Install Python Software
 
 ```bash
-sudo apt install -y python-scipy python-pygame
+sudo apt install -y python3-scipy python3-pygame
 
 pip3 install colour
 pip3 install adafruit-blinka
