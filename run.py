@@ -166,9 +166,8 @@ def main():
         # Grab a single frame of video
         ret, frame = cap.read()
 
-        if args.mirror:
-            # Invert left and right
-            frame = cv2.flip(frame, 1)
+        # Invert left and right
+        frame = cv2.flip(frame, 1)
 
         # draw tempo
         detected = sensor.draw(frame, args.alpha)
@@ -198,6 +197,10 @@ def main():
                 print(res)
             except Exception as ex:
                 print("Error", ex)
+
+        if args.mirror:
+            # Invert left and right
+            frame = cv2.flip(frame, 1)
 
         # Display the resulting image
         cv2.imshow("Video", frame)
