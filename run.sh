@@ -8,6 +8,6 @@ pushd ${SHELL_DIR}
 
 git pull
 
-python3 run.py --mirror
+python3 run.py $*
 
 popd
