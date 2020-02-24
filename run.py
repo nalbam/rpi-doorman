@@ -26,10 +26,11 @@ MAXTEMP = 31.0
 # how many color values we can have
 COLORDEPTH = 1024
 
+BUCKET_NAME = os.environ.get("BUCKET_NAME", "rpi-thermal-demo")
+
 # Setup the S3 client
 session = Session()
 s3 = session.create_client("s3")
-bucket_name = os.environ.get("BUCKET_NAME", "rpi-thermal-demo")
 
 
 def parse_args():
@@ -41,6 +42,7 @@ def parse_args():
     p.add_argument("--height", type=int, default=0, help="height")
     p.add_argument("--min-temp", type=float, default=MINTEMP, help="height")
     p.add_argument("--max-temp", type=float, default=MAXTEMP, help="height")
+    p.add_argument("--bucket-name", type=float, default=BUCKET_NAME, help="bucket name")
     p.add_argument("--alpha", type=float, default=0.9, help="alpha")
     return p.parse_args()
 
@@ -184,7 +186,7 @@ def main():
             # res = s3.put_object(
             #     ACL="public-read",
             #     Body=jpg_data.tostring(),
-            #     Bucket=bucket_name,
+            #     Bucket=args.bucket_name,
             #     Key=key,
             # )
             # print(res)
