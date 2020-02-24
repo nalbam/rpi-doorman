@@ -203,15 +203,15 @@ def main():
             # Invert left and right
             frame = cv2.flip(frame, 1)
 
-        # Display the resulting image
-        cv2.imshow("Video", frame)
-
         cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
 
         if args.full_screen:
             cv2.setWindowProperty(
                 "Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN
             )
+
+        # Display the resulting image
+        cv2.imshow("Video", frame)
 
         ch = cv2.waitKey(1)
         if ch == 27 or ch == ord("q") or ch == ord("Q"):
