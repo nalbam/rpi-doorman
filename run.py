@@ -96,17 +96,22 @@ class Sensor:
         for row in self.sensor.pixels:
             pixels = pixels + row
 
-            if row > self.max_temp:
+        temps = []
+        for p in pixels:
+            if p > self.max_temp:
                 detected = True
 
-        pixels = [
-            self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
-            for p in pixels
-        ]
+            temp = self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
+            temps.append(temp)
+
+        # pixels = [
+        #     self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
+        #     for p in pixels
+        # ]
 
         # perform interpolation
         bicubic = griddata(
-            self.points, pixels, (self.grid_x, self.grid_y), method="cubic"
+            self.points, temps, (self.grid_x, self.grid_y), method="cubic"
         )
 
         # draw pixel
