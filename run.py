@@ -186,15 +186,18 @@ def main():
 
             cv2.imwrite(key, frame)
 
-            # # create a s3 file key
-            # _, jpg_data = cv2.imencode(".jpg", frame)
-            # res = s3.put_object(
-            #     ACL="public-read",
-            #     Body=jpg_data.tostring(),
-            #     Bucket=args.bucket_name,
-            #     Key=key,
-            # )
-            # print(res)
+            try:
+                # create a s3 file key
+                _, jpg_data = cv2.imencode(".jpg", frame)
+                res = s3.put_object(
+                    ACL="public-read",
+                    Body=jpg_data.tostring(),
+                    Bucket=args.bucket_name,
+                    Key=key,
+                )
+                print(res)
+            except Exception as ex:
+                print("Error", ex)
 
         # Display the resulting image
         cv2.imshow("Video", frame)
