@@ -42,7 +42,7 @@ def parse_args():
     p.add_argument("--height", type=int, default=0, help="height")
     p.add_argument("--min-temp", type=float, default=MINTEMP, help="height")
     p.add_argument("--max-temp", type=float, default=MAXTEMP, help="height")
-    p.add_argument("--bucket-name", type=float, default=BUCKET_NAME, help="bucket name")
+    p.add_argument("--bucket-name", default=BUCKET_NAME, help="bucket name")
     p.add_argument("--alpha", type=float, default=0.9, help="alpha")
     return p.parse_args()
 
