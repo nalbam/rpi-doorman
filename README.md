@@ -13,6 +13,7 @@ Interfacing Options -> I2C
 
 ```bash
 sudo apt install -y python3-scipy python3-pygame
+sudo apt install -y xscreensaver
 
 pip3 install colour
 pip3 install adafruit-blinka
