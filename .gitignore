@@ -25,9 +25,10 @@ __pycache__
 .pytest_cache
 Pipfile.lock
 
-# maven
+# build
 build/
 config/
+incoming/
 target/
 
 # Nodejs

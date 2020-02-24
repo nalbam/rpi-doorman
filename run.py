@@ -1,7 +1,11 @@
 import argparse
+import boto3
 import cv2
+import datetime
+import json
 import math
 import numpy as np
+import os
 
 import busio
 import board
@@ -10,6 +14,7 @@ import adafruit_amg88xx
 
 from colour import Color
 from scipy.interpolate import griddata
+from botocore.session import Session
 
 
 # low range of the sensor (this will be blue on the screen)
@@ -20,6 +25,11 @@ MAXTEMP = 31.0
 
 # how many color values we can have
 COLORDEPTH = 1024
+
+# Setup the S3 client
+session = Session()
+s3 = session.create_client("s3")
+bucket_name = os.environ.get("BUCKET_NAME", "rpi-thermal-demo")
 
 
 def parse_args():
@@ -163,6 +173,21 @@ def main():
 
         if detected:
             print(detected)
+
+            filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S.%f") + ".jpg"
+            key = "incoming/{}".format(filename)
+
+            cv2.imwrite(filename, frame)
+
+            # # create a s3 file key
+            # _, jpg_data = cv2.imencode(".jpg", frame)
+            # res = s3.put_object(
+            #     ACL="public-read",
+            #     Body=jpg_data.tostring(),
+            #     Bucket=bucket_name,
+            #     Key=key,
+            # )
+            # print(res)
 
         # Display the resulting image
         cv2.imshow("Video", frame)
