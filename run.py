@@ -157,6 +157,7 @@ def main():
         frame_h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     print(frame_w, frame_h)
+    print(args.min, args.max)
     print('Press "Esc", "q" or "Q" to exit.')
 
     # initialize the sensor
