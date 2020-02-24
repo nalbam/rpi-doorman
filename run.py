@@ -99,8 +99,6 @@ class Sensor:
             if row > self.max_temp:
                 detected = True
 
-        print(pixels)
-
         pixels = [
             self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
             for p in pixels
