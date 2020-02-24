@@ -13,10 +13,10 @@ from scipy.interpolate import griddata
 
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 22.0
+MINTEMP = 23.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 30.0
+MAXTEMP = 31.0
 
 # how many color values we can have
 COLORDEPTH = 1024
@@ -33,16 +33,6 @@ def parse_args():
     p.add_argument("--max-temp", type=float, default=MAXTEMP, help="height")
     p.add_argument("--alpha", type=float, default=0.9, help="alpha")
     return p.parse_args()
-
-
-# def draw_video(frame):
-#     # move video
-#     w = int(SCREEN_W / 4)
-#     M = [[1, 0, w], [0, 1, 0]]
-
-#     h, w = frame.shape[:2]
-#     M = np.float32(M)
-#     frame = cv2.warpAffine(frame, M, (w, h))
 
 
 class Sensor:
@@ -103,7 +93,6 @@ class Sensor:
         pixels = []
         for row in self.sensor.pixels:
             pixels = pixels + row
-            # pixels.append(row)
         # for temp in range(0, 64):
         #     pixels.append(self.min_temp + (temp / 8))
 
