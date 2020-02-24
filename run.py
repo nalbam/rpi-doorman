@@ -174,8 +174,6 @@ def main():
         detected = sensor.draw(frame, args.alpha)
 
         if detected:
-            print(detected)
-
             incoming = "./incoming"
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S.%f") + ".jpg"
 
@@ -183,6 +181,8 @@ def main():
                 os.mkdir(incoming)
 
             key = "{}/{}".format(incoming, filename)
+
+            print(detected, key)
 
             cv2.imwrite(key, frame)
 
