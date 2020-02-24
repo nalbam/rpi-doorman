@@ -18,10 +18,10 @@ from botocore.session import Session
 
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 23.0
+MINTEMP = 24.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 31.0
+MAXTEMP = 32.0
 
 # how many color values we can have
 COLORDEPTH = 1024
