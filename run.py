@@ -89,12 +89,15 @@ class Sensor:
     def draw(self, frame, alpha):
         overlay = frame.copy()
 
+        detected = False
+
         # read the pixels
         pixels = []
         for row in self.sensor.pixels:
             pixels = pixels + row
-        # for temp in range(0, 64):
-        #     pixels.append(self.min_temp + (temp / 8))
+
+            if row > self.max_temp:
+                detected = True
 
         print(pixels)
 
@@ -121,6 +124,8 @@ class Sensor:
         cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
         cv2.imshow("Video", overlay)
+
+        return detected
 
 
 def main():
@@ -151,7 +156,10 @@ def main():
             frame = cv2.flip(frame, 1)
 
         # draw tempo
-        sensor.draw(frame, args.alpha)
+        detected = sensor.draw(frame, args.alpha)
+
+        if detected:
+            print(detected)
 
         # Display the resulting image
         cv2.imshow("Video", frame)
