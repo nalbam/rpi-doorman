@@ -1,4 +1,4 @@
-# rpi-thermal
+# rpi-doorman
 
 ## raspberry pi config
 
