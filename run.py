@@ -96,6 +96,8 @@ class Sensor:
         # for temp in range(0, 64):
         #     pixels.append(self.min_temp + (temp / 8))
 
+        print(pixels)
+
         pixels = [
             self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
             for p in pixels
