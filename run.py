@@ -26,7 +26,7 @@ MAXTEMP = 32.0
 # how many color values we can have
 COLORDEPTH = 1024
 
-BUCKET_NAME = os.environ.get("BUCKET_NAME", "rpi-thermal-demo")
+BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
 # Setup the S3 client
 session = Session()
