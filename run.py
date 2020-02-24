@@ -102,8 +102,8 @@ class Sensor:
         # read the pixels
         pixels = []
         for row in self.sensor.pixels:
-            # pixels = pixels + row
-            pixels.append(row)
+            pixels = pixels + row
+            # pixels.append(row)
         # for temp in range(0, 64):
         #     pixels.append(self.min_temp + (temp / 8))
 
