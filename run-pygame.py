@@ -20,10 +20,10 @@ from colour import Color
 import adafruit_amg88xx
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 22.0
+MINTEMP = 24.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 30.0
+MAXTEMP = 32.0
 
 # how many color values we can have
 COLORDEPTH = 1024
