@@ -19,9 +19,11 @@ from botocore.session import Session
 
 # low range of the sensor (this will be blue on the screen)
 MINTEMP = 22.0
+MINCOLOR = "indigo"
 
 # high range of the sensor (this will be red on the screen)
 MAXTEMP = 30.0
+MAXCOLOR = "red"
 
 # how many color values we can have
 COLORDEPTH = 1024
@@ -71,9 +73,7 @@ class Sensor:
 
     def get_colors(self):
         # the list of colors we can choose from
-        blue = Color("indigo")
-        red = Color("red")
-        colors = list(blue.range_to(red, COLORDEPTH))
+        colors = list(Color(MINCOLOR).range_to(Color(MAXCOLOR), COLORDEPTH))
 
         # create the array of colors
         return [

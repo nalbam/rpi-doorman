@@ -22,9 +22,11 @@ import adafruit_amg88xx
 
 # low range of the sensor (this will be blue on the screen)
 MINTEMP = 22.0
+MINCOLOR = "indigo"
 
 # high range of the sensor (this will be red on the screen)
 MAXTEMP = 30.0
+MAXCOLOR = "red"
 
 # how many color values we can have
 COLORDEPTH = 1024
@@ -59,8 +61,7 @@ def run():
     height = 240
 
     # the list of colors we can choose from
-    blue = Color("indigo")
-    colors = list(blue.range_to(Color("red"), COLORDEPTH))
+    colors = list(Color(MINCOLOR).range_to(Color(MAXCOLOR), COLORDEPTH))
 
     # create the array of colors
     colors = [(int(c.red * 255), int(c.green * 255), int(c.blue * 255)) for c in colors]
