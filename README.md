@@ -4,9 +4,11 @@
 
 ```bash
 sudo raspi-config
+```
 
-Interfacing Options -> Camera
-Interfacing Options -> I2C
+```
+Interfacing Options -> Camera -> Enabled
+Interfacing Options -> I2C -> Enabled
 ```
 
 ## Install Python Software
@@ -17,9 +19,10 @@ sudo apt install -y xscreensaver
 
 pip3 install boto3
 pip3 install colour
-pip3 install pygame
 pip3 install opencv-python
+pip3 install pygame
 pip3 install scipy
+
 pip3 install adafruit-blinka
 pip3 install adafruit-circuitpython-amg88xx
 ```
@@ -34,6 +37,12 @@ pip3 install adafruit-circuitpython-amg88xx
 
 ```
 sudo i2cdetect -y 1
+```
+
+## Run
+
+```bash
+python3 ./rpi-doorman/run.py --min-temp 18 --max-temp 26 --bucket-name <DOORMAN-BUCKET-NAME>
 ```
 
 * <https://learn.adafruit.com/adafruit-amg8833-8x8-thermal-camera-sensor/python-circuitpython>
