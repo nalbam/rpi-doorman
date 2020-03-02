@@ -6,6 +6,7 @@ import json
 import math
 import numpy as np
 import os
+import socket
 
 import busio
 import board
@@ -47,6 +48,16 @@ def parse_args():
     p.add_argument("--bucket-name", default=BUCKET_NAME, help="bucket name")
     p.add_argument("--alpha", type=float, default=1.0, help="alpha")
     return p.parse_args()
+
+
+def internet(host="8.8.8.8", port=53, timeout=1):
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except socket.error as ex:
+        print(ex)
+        return False
 
 
 class Sensor:
@@ -186,18 +197,20 @@ def main():
 
             cv2.imwrite(key, frame)
 
-            try:
-                # create a s3 file key
-                _, jpg_data = cv2.imencode(".jpg", frame)
-                res = s3.put_object(
-                    ACL="public-read",
-                    Body=jpg_data.tostring(),
-                    Bucket=args.bucket_name,
-                    Key=key,
-                )
-                print(res)
-            except Exception as ex:
-                print("Error", ex)
+            wifi = internet()
+            if wifi == True:
+                try:
+                    # create a s3 file key
+                    _, jpg_data = cv2.imencode(".jpg", frame)
+                    res = s3.put_object(
+                        ACL="public-read",
+                        Body=jpg_data.tostring(),
+                        Bucket=args.bucket_name,
+                        Key=key,
+                    )
+                    print(res)
+                except Exception as ex:
+                    print("Error", ex)
 
         if args.mirror:
             # Invert left and right
