@@ -15,7 +15,6 @@ import adafruit_amg88xx
 
 from colour import Color
 from scipy.interpolate import griddata
-from botocore.session import Session
 
 
 # low range of the sensor (this will be blue on the screen)
@@ -32,8 +31,7 @@ COLORDEPTH = 1024
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
 # Setup the S3 client
-session = Session()
-s3 = session.create_client("s3")
+s3 = boto3.client("s3")
 
 
 def parse_args():
@@ -203,10 +201,10 @@ def main():
                     # create a s3 file key
                     _, jpg_data = cv2.imencode(".jpg", frame)
                     res = s3.put_object(
-                        ACL="public-read",
-                        Body=jpg_data.tostring(),
                         Bucket=args.bucket_name,
                         Key=key,
+                        Body=jpg_data.tostring(),
+                        ACL="public-read",
                     )
                     print(res)
                 except Exception as ex:
