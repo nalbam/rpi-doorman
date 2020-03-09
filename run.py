@@ -195,8 +195,7 @@ def main():
 
             cv2.imwrite(key, frame)
 
-            wifi = internet()
-            if wifi == True:
+            if internet():
                 try:
                     # create a s3 file key
                     _, jpg_data = cv2.imencode(".jpg", frame)
