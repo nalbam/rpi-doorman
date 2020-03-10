@@ -40,11 +40,11 @@ def parse_args():
     p.add_argument("-b", "--bucket-name", default=BUCKET_NAME, help="bucket name")
     p.add_argument("-c", "--camera-id", type=int, default=0, help="camera id")
     p.add_argument("-f", "--full-screen", action="store_true", help="full screen")
-    p.add_argument("-h", "--height", type=int, default=0, help="height")
     p.add_argument("-m", "--mirror", action="store_true", help="mirror")
-    p.add_argument("-n", "--min-temp", type=float, default=MINTEMP, help="min-temp")
-    p.add_argument("-w", "--width", type=int, default=0, help="width")
-    p.add_argument("-x", "--max-temp", type=float, default=MAXTEMP, help="max-temp")
+    p.add_argument("--width", type=int, default=0, help="width")
+    p.add_argument("--height", type=int, default=0, help="height")
+    p.add_argument("--min-temp", type=float, default=MINTEMP, help="min-temp")
+    p.add_argument("--max-temp", type=float, default=MAXTEMP, help="max-temp")
     return p.parse_args()
 
 
