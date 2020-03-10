@@ -42,9 +42,9 @@ def parse_args():
     p.add_argument("-f", "--full-screen", action="store_true", help="full screen")
     p.add_argument("-h", "--height", type=int, default=0, help="height")
     p.add_argument("-m", "--mirror", action="store_true", help="mirror")
-    p.add_argument("-n", "--min-temp", type=float, default=MINTEMP, help="height")
+    p.add_argument("-n", "--min-temp", type=float, default=MINTEMP, help="min-temp")
     p.add_argument("-w", "--width", type=int, default=0, help="width")
-    p.add_argument("-x", "--max-temp", type=float, default=MAXTEMP, help="height")
+    p.add_argument("-x", "--max-temp", type=float, default=MAXTEMP, help="max-temp")
     return p.parse_args()
 
 
