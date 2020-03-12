@@ -80,6 +80,8 @@ class Sensor:
         # initialize the sensor
         self.sensor = adafruit_amg88xx.AMG88XX(self.i2c_bus)
 
+        self.temps = []
+
     def get_colors(self):
         # the list of colors we can choose from
         colors = list(Color(MINCOLOR).range_to(Color(MAXCOLOR), COLORDEPTH))
@@ -107,9 +109,7 @@ class Sensor:
     def map_value(self, x, in_min, in_max, out_min, out_max):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
-    def draw(self, frame, alpha):
-        overlay = frame.copy()
-
+    def detect(self):
         detected = False
 
         # read the pixels
@@ -117,22 +117,28 @@ class Sensor:
         for row in self.sensor.pixels:
             pixels = pixels + row
 
-        temps = []
-        for p in pixels:
-            if p > self.max_temp:
-                detected = True
-
-            temp = self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
-            temps.append(temp)
-
         # pixels = [
         #     self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
         #     for p in pixels
         # ]
 
+        self.temps = []
+        for p in pixels:
+            if p > self.max_temp:
+                detected = True
+
+            temp = self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
+
+            self.temps.append(temp)
+
+        return detected
+
+    def draw(self, frame, alpha):
+        overlay = frame.copy()
+
         # perform interpolation
         bicubic = griddata(
-            self.points, temps, (self.grid_x, self.grid_y), method="cubic"
+            self.points, self.temps, (self.grid_x, self.grid_y), method="cubic"
         )
 
         # draw pixel
@@ -148,8 +154,6 @@ class Sensor:
         cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
         cv2.imshow("Video", overlay)
-
-        return detected
 
 
 def main():
@@ -169,6 +173,9 @@ def main():
     print(args.min_temp, args.max_temp)
     print('Press "Esc", "q" or "Q" to exit.')
 
+    incoming = "incoming"
+    file_ext = "jpg"
+
     # initialize the sensor
     sensor = Sensor(args, frame_w, frame_h)
 
@@ -179,17 +186,16 @@ def main():
         # Invert left and right
         frame = cv2.flip(frame, 1)
 
-        # draw tempo
-        detected = sensor.draw(frame, args.alpha)
+        filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
+
+        # temp detect
+        detected = sensor.detect()
 
         if detected:
-            incoming = "incoming"
-            filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S.%f") + ".jpg"
-
             if os.path.isdir(incoming) == False:
                 os.mkdir(incoming)
 
-            key = "{}/{}".format(incoming, filename)
+            key = "{}/{}.{}".format(incoming, filename, file_ext)
 
             print(detected, key)
 
@@ -208,6 +214,9 @@ def main():
                     print(res)
                 except Exception as ex:
                     print("Error", ex)
+
+        # draw tempo
+        sensor.draw(frame, args.alpha)
 
         if args.mirror:
             # Invert left and right
