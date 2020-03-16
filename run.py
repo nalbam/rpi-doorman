@@ -215,8 +215,14 @@ def main():
                 except Exception as ex:
                     print("Error", ex)
 
-        # draw tempo
+        # draw graph
         sensor.draw(frame, args.alpha)
+
+        # if detected:
+        #     key = "{}/{}-gph.{}".format(incoming, filename, file_ext)
+
+        #     # Crop square
+        #     crop = frame[y : y + w, x : x + w]
 
         if args.mirror:
             # Invert left and right
