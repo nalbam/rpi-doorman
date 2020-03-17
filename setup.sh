@@ -3,13 +3,11 @@
 sudo apt update
 sudo apt upgrade -y
 
-sudo apt install -y build-essential cmake pkg-config qt5-default
-sudo apt install -y libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
-
-sudo apt install -y libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
-sudo apt install -y libxvidcore-dev libx264-dev
-sudo apt install -y libgtk2.0-dev libgtk-3-dev
-sudo apt install -y libatlas-base-dev gfortran
+sudo apt install -y build-essential cmake pkg-config qt5-default gfortran \
+                    libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev \
+                    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+                    libxvidcore-dev libx264-dev libgtk2.0-dev libgtk-3-dev \
+                    libatlas-base-dev
 
 sudo apt install -y python2.7-dev python3-dev
 
