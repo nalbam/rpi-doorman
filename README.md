@@ -15,7 +15,6 @@ Interfacing Options -> I2C -> Enabled
 
 ```bash
 # sudo apt install -y python3-scipy python3-pygame
-sudo apt install -y xscreensaver
 
 pip3 install awscli
 pip3 install boto3

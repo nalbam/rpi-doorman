@@ -3,7 +3,6 @@
 sudo apt update
 sudo apt upgrade -y
 
-sudo apt install -y xscreensaver
 sudo apt install -y build-essential cmake pkg-config qt5-default
 sudo apt install -y libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
 
