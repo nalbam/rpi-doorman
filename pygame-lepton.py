@@ -11,12 +11,7 @@ import numpy as np
 import os
 import pygame
 import time
-import time
 import traceback
-
-from colour import Color
-
-from scipy.interpolate import griddata
 
 from pylepton.Lepton3 import Lepton3
 
@@ -104,12 +99,12 @@ def run():
             with Lepton3(device) as l:
                 _, nr = l.capture(lepton_buf)
 
-                for ix, row in enumerate(lepton_buf):  # 120
-                    for jx, pixel in enumerate(row):  # 160
-                        lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+                # for ix, row in enumerate(lepton_buf):  # 120
+                #     for jx, pixel in enumerate(row):  # 160
+                #         lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
                 lepton_buf[0][0] = MAXTEMP
-                lepton_buf[0][1] = MINTEMP
+                # lepton_buf[0][1] = MINTEMP
 
                 cv2.normalize(lepton_buf, lepton_buf, 0, 65535, cv2.NORM_MINMAX)
 
