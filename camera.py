@@ -4,28 +4,12 @@ import argparse
 import boto3
 import cv2
 import datetime
-import json
-import math
-import numpy as np
 import os
 import socket
-import traceback
 
-from colour import Color
-from scipy.interpolate import griddata
-
-from pylepton.Lepton3 import Lepton3
-
-from colormap import colormap
-
-
-# low range of the sensor
-MINTEMP = 29000
-
-# high range of the sensor
-MAXTEMP = 31000
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
+
 
 # Setup the S3 client
 s3 = boto3.client("s3")
@@ -33,15 +17,12 @@ s3 = boto3.client("s3")
 
 def parse_args():
     p = argparse.ArgumentParser(description="webcam demo")
-    p.add_argument("-a", "--alpha", type=float, default=1.0, help="alpha")
     p.add_argument("-b", "--bucket-name", default=BUCKET_NAME, help="bucket name")
     p.add_argument("-c", "--camera-id", type=int, default=0, help="camera id")
     p.add_argument("-f", "--full-screen", action="store_true", help="full screen")
     p.add_argument("-m", "--mirror", action="store_true", help="mirror")
     p.add_argument("--width", type=int, default=0, help="width")
     p.add_argument("--height", type=int, default=0, help="height")
-    p.add_argument("--min", type=float, default=MINTEMP, help="min temp")
-    p.add_argument("--max", type=float, default=MAXTEMP, help="max temp")
     return p.parse_args()
 
 
@@ -85,83 +66,6 @@ def upload(args, frame, filename=""):
     return filename
 
 
-class Sensor:
-    def __init__(self, args):
-        self.device = "/dev/spidev0.0"
-
-        self.min_temp = args.min
-        self.max_temp = args.max
-
-        self.width = 160
-        self.height = 120
-
-        self.pixels = np.zeros((120, 160, 1), dtype=np.uint16)
-        self.length = self.width * self.height
-
-        self.l = Lepton3(self.device)
-
-    def get_position(self, i, j):
-        pt1 = (
-            int(j),
-            int(i),
-        )
-        pt2 = (
-            int((j + 1)),
-            int((i + 1)),
-        )
-        return pt1, pt2
-
-    def get_color(self, v):
-        i = min(255, max(0, int(v)))
-        return (
-            colormap[i * 3],
-            colormap[i * 3 + 1],
-            colormap[i * 3 + 2],
-        )
-
-    def map_value(self, x, in_min, in_max, out_min, out_max):
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-
-    def detect(self):
-        detected = False
-
-        try:
-            with Lepton3(self.device) as l:
-                _, nr = l.capture(self.pixels)
-
-                # for ix, row in enumerate(self.pixels):  # 120
-                #     for jx, pixel in enumerate(row):  # 160
-                #         self.pixels[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
-
-                self.pixels[0][0] = MAXTEMP
-                # self.pixels[0][1] = MINTEMP
-
-                cv2.normalize(self.pixels, self.pixels, 0, 65535, cv2.NORM_MINMAX)
-                np.right_shift(self.pixels, 8, self.pixels)
-
-        except Exception:
-            traceback.print_exc()
-
-        return detected
-
-    def draw(self, frame, alpha):
-        overlay = frame.copy()
-
-        # draw pixel
-        for i, row in enumerate(self.pixels):
-            for j, pixel in enumerate(row):
-                pt1, pt2 = self.get_position(i, j)
-                color = self.get_color(pixel)
-
-                cv2.rectangle(
-                    overlay, pt1, pt2, color, cv2.FILLED,
-                )
-
-        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
-
-        cv2.imshow("Video", overlay)
-
-
 def main():
     args = parse_args()
 
@@ -180,32 +84,20 @@ def main():
     print('Press "Esc", "q" or "Q" to exit.')
 
     detected = False
-
     filename = ""
 
-    # initialize the sensor
-    sensor = Sensor(args)
-
     while True:
-        # temp detect
-        detected = sensor.detect()
-
         # Grab a single frame of video
         ret, frame = cap.read()
 
         # Invert left and right
         frame = cv2.flip(frame, 1)
 
+        # temp detect
+        detected = False
+
         if detected:
             filename = upload(args, frame)
-
-        # draw graph
-        sensor.draw(frame, args.alpha)
-
-        # if detected:
-        #     # Crop square
-        #     crop = frame[y : y + w, x : x + w]
-        #     upload(args, frame, filename)
 
         if args.mirror:
             # Invert left and right

@@ -57,6 +57,36 @@ def internet(host="8.8.8.8", port=53, timeout=1):
         return False
 
 
+def upload(args, frame, filename=""):
+    incoming = "incoming"
+    file_ext = "jpg"
+
+    if os.path.isdir(incoming) == False:
+        os.mkdir(incoming)
+
+    if filename == "":
+        filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
+    key = "{}/{}.{}".format(incoming, filename, file_ext)
+
+    cv2.imwrite(key, frame)
+
+    if internet():
+        try:
+            # create a s3 file key
+            _, jpg_data = cv2.imencode(".jpg", frame)
+            res = s3.put_object(
+                Bucket=args.bucket_name,
+                Key=key,
+                Body=jpg_data.tostring(),
+                ACL="public-read",
+            )
+            print(res)
+        except Exception as ex:
+            print("Error", ex)
+
+    return filename
+
+
 class Sensor:
     def __init__(self, args, width, height):
         self.min_temp = args.min
@@ -185,37 +215,15 @@ def main():
         detected = sensor.detect()
 
         if detected:
-            if os.path.isdir(incoming) == False:
-                os.mkdir(incoming)
-
-            key = "{}/{}.{}".format(incoming, filename, file_ext)
-
-            print(detected, key)
-
-            cv2.imwrite(key, frame)
-
-            if internet():
-                try:
-                    # create a s3 file key
-                    _, jpg_data = cv2.imencode(".jpg", frame)
-                    res = s3.put_object(
-                        Bucket=args.bucket_name,
-                        Key=key,
-                        Body=jpg_data.tostring(),
-                        ACL="public-read",
-                    )
-                    print(res)
-                except Exception as ex:
-                    print("Error", ex)
+            filename = upload(args, frame)
 
         # draw graph
         sensor.draw(frame, args.alpha)
 
         # if detected:
-        #     key = "{}/{}-gph.{}".format(incoming, filename, file_ext)
-
         #     # Crop square
         #     crop = frame[y : y + w, x : x + w]
+        #     upload(args, frame, filename)
 
         if args.mirror:
             # Invert left and right
