@@ -75,13 +75,14 @@ def run():
         if run == False:
             break
 
+        max_temp = 0
+
         try:
             with Lepton3(device) as l:
                 _, nr = l.capture(pixels)
 
-                # for ix, row in enumerate(pixels):  # 120
-                #     for jx, pixel in enumerate(row):  # 160
-                #         pixels[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+                for ix, row in enumerate(pixels):
+                    max_temp = max(max_temp, max(row))
 
                 pixels[0][0] = MAXTEMP
                 # pixels[0][1] = MINTEMP
