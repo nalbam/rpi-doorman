@@ -9,6 +9,7 @@ import math
 import numpy as np
 import os
 import socket
+import traceback
 
 from colour import Color
 from scipy.interpolate import griddata
