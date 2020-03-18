@@ -62,9 +62,9 @@ class Sensor:
         self.min_temp = args.min
         self.max_temp = args.max
 
-        self.lepton_buf = np.zeros((120, 160, 1), dtype=np.uint16)
+        self.pixels = np.zeros((120, 160, 1), dtype=np.uint16)
 
-        self.pixels = [160, 120]
+        # self.pixels = [160, 120]
         self.length = self.pixels[0] * self.pixels[1]
 
         # self.start_pos = [0, int((height - self.size[1]) / 2)]
@@ -72,7 +72,7 @@ class Sensor:
 
         # pylint: disable=invalid-slice-index
         self.points = [
-            (math.floor(ix / self.pixels[1]), (ix % self.pixels[1]))
+            (math.floor(ix / self.pixels[0]), (ix % self.pixels[0]))
             for ix in range(0, self.length)
         ]
         self.grid_x, self.grid_y = np.mgrid[0:159:160j, 0:119:120j]
@@ -82,12 +82,12 @@ class Sensor:
 
     def get_position(self, i, j):
         pt1 = (
-            int((self.pixels[0] * i) + self.start_pos[0]),
-            int((self.pixels[1] * j) + self.start_pos[1]),
+            int((self.pixels[1] * i) + self.start_pos[0]),
+            int((self.pixels[0] * j) + self.start_pos[1]),
         )
         pt2 = (
-            int((self.pixels[0] * (i + 1)) + self.start_pos[0]),
-            int((self.pixels[1] * (j + 1)) + self.start_pos[1]),
+            int((self.pixels[1] * (i + 1)) + self.start_pos[0]),
+            int((self.pixels[0] * (j + 1)) + self.start_pos[1]),
         )
         return pt1, pt2
 
