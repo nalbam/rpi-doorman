@@ -10,22 +10,19 @@ import numpy as np
 import os
 import socket
 
-import busio
-import board
-
-import adafruit_amg88xx
-
 from colour import Color
 from scipy.interpolate import griddata
+
+from pylepton.Lepton3 import Lepton3
 
 from colormap import colormap
 
 
-# low range of the sensor (this will be blue on the screen)
-MINTEMP = 22.0
+# low range of the sensor
+MINTEMP = 29000
 
-# high range of the sensor (this will be red on the screen)
-MAXTEMP = 30.0
+# high range of the sensor
+MAXTEMP = 31000
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
@@ -42,8 +39,8 @@ def parse_args():
     p.add_argument("-m", "--mirror", action="store_true", help="mirror")
     p.add_argument("--width", type=int, default=0, help="width")
     p.add_argument("--height", type=int, default=0, help="height")
-    p.add_argument("--min", type=float, default=MINTEMP, help="min-temp")
-    p.add_argument("--max", type=float, default=MAXTEMP, help="max-temp")
+    p.add_argument("--min", type=float, default=MINTEMP, help="min temp")
+    p.add_argument("--max", type=float, default=MAXTEMP, help="max temp")
     return p.parse_args()
 
 
@@ -59,25 +56,28 @@ def internet(host="8.8.8.8", port=53, timeout=1):
 
 class Sensor:
     def __init__(self, args, width, height):
+        self.device = "/dev/spidev0.0"
+
         self.min_temp = args.min_temp
         self.max_temp = args.max_temp
 
-        self.size = [int(width / 3), int(width / 3)]
-        self.pixels = [self.size[0] / 32, self.size[1] / 32]
-        # self.start_pos = [0, int((height - self.size[1]) / 2)]
-        self.start_pos = [0, 0]
+        self.lepton_buf = np.zeros((120, 160, 1), dtype=np.uint16)
+
+        self.pixels = [160, 120]
+        self.length = pixels[0] * pixels[1]
 
         # pylint: disable=invalid-slice-index
-        self.points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]
-        self.grid_x, self.grid_y = np.mgrid[0:7:32j, 0:7:32j]
+        self.points = [
+            (math.floor(ix / pixels[1]), (ix % pixels[1])) for ix in range(0, length)
+        ]
+        grid_x, grid_y = np.mgrid[0:159:160j, 0:119:120j]
         # pylint: enable=invalid-slice-index
 
-        self.i2c_bus = busio.I2C(board.SCL, board.SDA)
+        self.width = pixels[0] * 4
+        self.height = pixels[1] * 4
 
-        # initialize the sensor
-        self.sensor = adafruit_amg88xx.AMG88XX(self.i2c_bus)
-
-        self.temps = []
+        self.displayPixelWidth = 4
+        self.displayPixelHeight = 4
 
     def get_position(self, i, j):
         pt1 = (
@@ -104,37 +104,32 @@ class Sensor:
     def detect(self):
         detected = False
 
-        # read the pixels
-        pixels = []
-        for row in self.sensor.pixels:
-            pixels = pixels + row
+        try:
+            with Lepton3(self.device) as l:
+                _, nr = l.capture(self.lepton_buf)
 
-        # pixels = [
-        #     self.map_value(p, self.min_temp, self.max_temp, 0, 255)
-        #     for p in pixels
-        # ]
+                for ix, row in enumerate(self.lepton_buf):  # 120
+                    for jx, pixel in enumerate(row):  # 160
+                        self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-        self.temps = []
-        for p in pixels:
-            if p > self.max_temp:
-                detected = True
+                self.lepton_buf[0][0] = MAXTEMP
+                self.lepton_buf[0][1] = MINTEMP
 
-            temp = self.map_value(p, self.min_temp, self.max_temp, 0, 255)
+                cv2.normalize(
+                    self.lepton_buf, self.lepton_buf, 0, 65535, cv2.NORM_MINMAX
+                )
+                np.right_shift(self.lepton_buf, 8, self.lepton_buf)
 
-            self.temps.append(temp)
+        except Exception:
+            traceback.print_exc()
 
         return detected
 
     def draw(self, frame, alpha):
         overlay = frame.copy()
 
-        # perform interpolation
-        bicubic = griddata(
-            self.points, self.temps, (self.grid_x, self.grid_y), method="cubic"
-        )
-
         # draw pixel
-        for i, row in enumerate(bicubic):
+        for i, row in enumerate(self.lepton_buf):
             for j, pixel in enumerate(row):
                 pt1, pt2 = self.get_position(i, j)
                 color = self.get_color(pixel)
