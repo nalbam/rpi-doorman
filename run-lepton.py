@@ -65,7 +65,7 @@ class Sensor:
         self.width = 160
         self.height = 120
 
-        self.pixels = []
+        self.pixels = np.zeros((120, 160, 1), dtype=np.uint16)
         self.length = self.width * self.height
 
         self.l = Lepton3(self.device)
