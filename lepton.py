@@ -148,6 +148,8 @@ def main():
                     ),
                 )
 
+        print(args.max, max_temp)
+
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
             data = {"filename": filename, "uploaded": False}
