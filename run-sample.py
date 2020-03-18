@@ -112,9 +112,10 @@ def run():
         # draw everything
         for ix, row in enumerate(bicubic):
             for jx, pixel in enumerate(row):
+                color = get_color(pixel)
                 pygame.draw.rect(
                     screen,
-                    get_color(pixel),
+                    color,
                     (
                         # left, top, width, height
                         displayPixelWidth * ix,
