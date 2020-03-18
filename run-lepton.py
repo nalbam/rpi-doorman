@@ -55,7 +55,7 @@ def internet(host="8.8.8.8", port=53, timeout=1):
 
 
 class Sensor:
-    def __init__(self, args, width, height):
+    def __init__(self, args):
         self.device = "/dev/spidev0.0"
 
         self.min_temp = args.min
@@ -76,12 +76,6 @@ class Sensor:
         ]
         self.grid_x, self.grid_y = np.mgrid[0:159:160j, 0:119:120j]
         # pylint: enable=invalid-slice-index
-
-        self.width = self.pixels[0] * 4
-        self.height = self.pixels[1] * 4
-
-        self.displayPixelWidth = 4
-        self.displayPixelHeight = 4
 
     def get_position(self, i, j):
         pt1 = (
