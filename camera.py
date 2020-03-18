@@ -8,10 +8,13 @@ import json
 import os
 import socket
 
+from pathlib import Path
+
+HOME = str(Path.home())
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
-JSON_PATH = os.environ.get("JSON_PATH", "data.json")
+JSON_PATH = os.environ.get("JSON_PATH", "{}/.doorman.json".format(HOME))
 
 
 # Setup the S3 client
@@ -19,7 +22,7 @@ s3 = boto3.client("s3")
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="webcam demo")
+    p = argparse.ArgumentParser(description="doorman")
     p.add_argument("-b", "--bucket-name", default=BUCKET_NAME, help="bucket name")
     p.add_argument("-c", "--camera-id", type=int, default=0, help="camera id")
     p.add_argument("-f", "--full-screen", action="store_true", help="full screen")
