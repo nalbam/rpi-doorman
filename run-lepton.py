@@ -175,8 +175,8 @@ def main():
 
         filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
 
-        # # temp detect
-        # detected = sensor.detect()
+        # temp detect
+        detected = sensor.detect()
 
         if detected:
             if os.path.isdir(incoming) == False:
