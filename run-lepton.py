@@ -106,12 +106,12 @@ class Sensor:
             with Lepton3(self.device) as l:
                 _, nr = l.capture(self.lepton_buf)
 
-                for ix, row in enumerate(self.lepton_buf):  # 120
-                    for jx, pixel in enumerate(row):  # 160
-                        self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+                # for ix, row in enumerate(self.lepton_buf):  # 120
+                #     for jx, pixel in enumerate(row):  # 160
+                #         self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-                self.lepton_buf[0][0] = MAXTEMP
-                self.lepton_buf[0][1] = MINTEMP
+                # self.lepton_buf[0][0] = MAXTEMP
+                # self.lepton_buf[0][1] = MINTEMP
 
                 cv2.normalize(
                     self.lepton_buf, self.lepton_buf, 0, 65535, cv2.NORM_MINMAX
