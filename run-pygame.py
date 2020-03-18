@@ -115,8 +115,8 @@ def run():
                     get_color(pixel),
                     (
                         # left, top, width, height
-                        displayPixelWidth * jx,
-                        displayPixelHeight * ix,
+                        displayPixelWidth * ix,
+                        displayPixelHeight * jx,
                         displayPixelWidth,
                         displayPixelHeight,
                     ),
