@@ -168,7 +168,7 @@ def main():
     file_ext = "jpg"
 
     # initialize the sensor
-    sensor = Sensor(args, frame_w, frame_h)
+    sensor = Sensor(args)
 
     while True:
         # Grab a single frame of video
@@ -207,7 +207,7 @@ def main():
                     print("Error", ex)
 
         # draw graph
-        sensor.draw(frame, args.alpha)
+        # sensor.draw(frame, args.alpha)
 
         # if detected:
         #     key = "{}/{}-gph.{}".format(incoming, filename, file_ext)
