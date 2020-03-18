@@ -161,6 +161,8 @@ def main():
     incoming = "incoming"
     file_ext = "jpg"
 
+    detected = False
+
     # initialize the sensor
     sensor = Sensor(args)
 
@@ -173,8 +175,8 @@ def main():
 
         filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
 
-        # temp detect
-        detected = sensor.detect()
+        # # temp detect
+        # detected = sensor.detect()
 
         if detected:
             if os.path.isdir(incoming) == False:
@@ -200,7 +202,7 @@ def main():
                 except Exception as ex:
                     print("Error", ex)
 
-        # draw graph
+        # # draw graph
         # sensor.draw(frame, args.alpha)
 
         # if detected:
