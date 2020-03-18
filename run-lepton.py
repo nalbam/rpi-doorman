@@ -72,12 +72,12 @@ class Sensor:
 
     def get_position(self, i, j):
         pt1 = (
-            int(self.width * i),
-            int(self.height * j),
+            int(i),
+            int(j),
         )
         pt2 = (
-            int(self.width * (i + 1)),
-            int(self.height * (j + 1)),
+            int((i + 1)),
+            int((j + 1)),
         )
         return pt1, pt2
 
