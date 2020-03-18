@@ -64,6 +64,7 @@ class Sensor:
 
         self.size = [int(width / 3), int(width / 3)]
         self.pixels = [self.size[0] / 32, self.size[1] / 32]
+
         # self.start_pos = [0, int((height - self.size[1]) / 2)]
         self.start_pos = [0, 0]
 

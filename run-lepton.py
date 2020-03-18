@@ -66,6 +66,9 @@ class Sensor:
         self.pixels = [160, 120]
         self.length = self.pixels[0] * self.pixels[1]
 
+        # self.start_pos = [0, int((height - self.size[1]) / 2)]
+        self.start_pos = [0, 0]
+
         # pylint: disable=invalid-slice-index
         self.points = [
             (math.floor(ix / self.pixels[1]), (ix % self.pixels[1]))
