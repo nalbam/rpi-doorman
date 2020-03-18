@@ -10,7 +10,7 @@ import socket
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
-JSON_PATH = os.environ.get("JSON_PATH", "~/.doorman.json")
+JSON_PATH = os.environ.get("JSON_PATH", "data.json")
 
 
 # Setup the S3 client
