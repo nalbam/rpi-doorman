@@ -64,17 +64,18 @@ class Sensor:
         self.lepton_buf = np.zeros((120, 160, 1), dtype=np.uint16)
 
         self.pixels = [160, 120]
-        self.length = pixels[0] * pixels[1]
+        self.length = self.pixels[0] * self.pixels[1]
 
         # pylint: disable=invalid-slice-index
         self.points = [
-            (math.floor(ix / pixels[1]), (ix % pixels[1])) for ix in range(0, length)
+            (math.floor(ix / self.pixels[1]), (ix % self.pixels[1]))
+            for ix in range(0, self.length)
         ]
-        grid_x, grid_y = np.mgrid[0:159:160j, 0:119:120j]
+        self.grid_x, self.grid_y = np.mgrid[0:159:160j, 0:119:120j]
         # pylint: enable=invalid-slice-index
 
-        self.width = pixels[0] * 4
-        self.height = pixels[1] * 4
+        self.width = self.pixels[0] * 4
+        self.height = self.pixels[1] * 4
 
         self.displayPixelWidth = 4
         self.displayPixelHeight = 4
