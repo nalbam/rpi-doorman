@@ -72,12 +72,12 @@ class Sensor:
 
     def get_position(self, i, j):
         pt1 = (
-            int(i),
             int(j),
+            int(i),
         )
         pt2 = (
-            int((i + 1)),
             int((j + 1)),
+            int((i + 1)),
         )
         return pt1, pt2
 
@@ -96,18 +96,18 @@ class Sensor:
         detected = False
 
         try:
-            # with Lepton3(self.device) as l:
-            _, nr = self.l.capture(self.pixels)
+            with Lepton3(self.device) as l:
+                _, nr = l.capture(self.pixels)
 
-            # for ix, row in enumerate(self.pixels):  # 120
-            #     for jx, pixel in enumerate(row):  # 160
-            #         self.pixels[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+                # for ix, row in enumerate(self.pixels):  # 120
+                #     for jx, pixel in enumerate(row):  # 160
+                #         self.pixels[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-            self.pixels[0][0] = MAXTEMP
-            # self.pixels[0][1] = MINTEMP
+                self.pixels[0][0] = MAXTEMP
+                # self.pixels[0][1] = MINTEMP
 
-            cv2.normalize(self.pixels, self.pixels, 0, 65535, cv2.NORM_MINMAX)
-            np.right_shift(self.pixels, 8, self.pixels)
+                cv2.normalize(self.pixels, self.pixels, 0, 65535, cv2.NORM_MINMAX)
+                np.right_shift(self.pixels, 8, self.pixels)
 
         except Exception:
             traceback.print_exc()
