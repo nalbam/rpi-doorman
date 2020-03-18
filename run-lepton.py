@@ -62,32 +62,22 @@ class Sensor:
         self.min_temp = args.min
         self.max_temp = args.max
 
-        self.pixels = np.zeros((120, 160, 1), dtype=np.uint16)
+        self.width = 160
+        self.height = 120
 
-        # self.pixels = [160, 120]
-        self.length = self.pixels[0] * self.pixels[1]
-
-        # self.start_pos = [0, int((height - self.size[1]) / 2)]
-        self.start_pos = [0, 0]
-
-        # pylint: disable=invalid-slice-index
-        self.points = [
-            (math.floor(ix / self.pixels[0]), (ix % self.pixels[0]))
-            for ix in range(0, self.length)
-        ]
-        self.grid_x, self.grid_y = np.mgrid[0:159:160j, 0:119:120j]
-        # pylint: enable=invalid-slice-index
+        self.pixels = []
+        self.length = self.width * self.height
 
         self.l = Lepton3(self.device)
 
     def get_position(self, i, j):
         pt1 = (
-            int((self.pixels[1] * i) + self.start_pos[0]),
-            int((self.pixels[0] * j) + self.start_pos[1]),
+            int(self.width * i),
+            int(self.height * j),
         )
         pt2 = (
-            int((self.pixels[1] * (i + 1)) + self.start_pos[0]),
-            int((self.pixels[0] * (j + 1)) + self.start_pos[1]),
+            int(self.width * (i + 1)),
+            int(self.height * (j + 1)),
         )
         return pt1, pt2
 
@@ -107,17 +97,17 @@ class Sensor:
 
         try:
             # with Lepton3(self.device) as l:
-            _, nr = self.l.capture(self.lepton_buf)
+            _, nr = self.l.capture(self.pixels)
 
-            # for ix, row in enumerate(self.lepton_buf):  # 120
+            # for ix, row in enumerate(self.pixels):  # 120
             #     for jx, pixel in enumerate(row):  # 160
-            #         self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+            #         self.pixels[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-            self.lepton_buf[0][0] = MAXTEMP
-            # self.lepton_buf[0][1] = MINTEMP
+            self.pixels[0][0] = MAXTEMP
+            # self.pixels[0][1] = MINTEMP
 
-            cv2.normalize(self.lepton_buf, self.lepton_buf, 0, 65535, cv2.NORM_MINMAX)
-            np.right_shift(self.lepton_buf, 8, self.lepton_buf)
+            cv2.normalize(self.pixels, self.pixels, 0, 65535, cv2.NORM_MINMAX)
+            np.right_shift(self.pixels, 8, self.pixels)
 
         except Exception:
             traceback.print_exc()
@@ -128,7 +118,7 @@ class Sensor:
         overlay = frame.copy()
 
         # draw pixel
-        for i, row in enumerate(self.lepton_buf):
+        for i, row in enumerate(self.pixels):
             for j, pixel in enumerate(row):
                 pt1, pt2 = self.get_position(i, j)
                 color = self.get_color(pixel)
