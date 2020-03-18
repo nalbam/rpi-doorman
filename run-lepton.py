@@ -77,6 +77,8 @@ class Sensor:
         self.grid_x, self.grid_y = np.mgrid[0:159:160j, 0:119:120j]
         # pylint: enable=invalid-slice-index
 
+        self.l = Lepton3(self.device)
+
     def get_position(self, i, j):
         pt1 = (
             int((self.pixels[0] * i) + self.start_pos[0]),
@@ -103,20 +105,18 @@ class Sensor:
         detected = False
 
         try:
-            with Lepton3(self.device) as l:
-                _, nr = l.capture(self.lepton_buf)
+            # with Lepton3(self.device) as l:
+            _, nr = self.l.capture(self.lepton_buf)
 
-                # for ix, row in enumerate(self.lepton_buf):  # 120
-                #     for jx, pixel in enumerate(row):  # 160
-                #         self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+            # for ix, row in enumerate(self.lepton_buf):  # 120
+            #     for jx, pixel in enumerate(row):  # 160
+            #         self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-                self.lepton_buf[0][0] = MAXTEMP
-                # self.lepton_buf[0][1] = MINTEMP
+            self.lepton_buf[0][0] = MAXTEMP
+            # self.lepton_buf[0][1] = MINTEMP
 
-                cv2.normalize(
-                    self.lepton_buf, self.lepton_buf, 0, 65535, cv2.NORM_MINMAX
-                )
-                np.right_shift(self.lepton_buf, 8, self.lepton_buf)
+            cv2.normalize(self.lepton_buf, self.lepton_buf, 0, 65535, cv2.NORM_MINMAX)
+            np.right_shift(self.lepton_buf, 8, self.lepton_buf)
 
         except Exception:
             traceback.print_exc()
