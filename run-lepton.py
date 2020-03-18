@@ -203,8 +203,8 @@ def main():
                 except Exception as ex:
                     print("Error", ex)
 
-        # # draw graph
-        # sensor.draw(frame, args.alpha)
+        # draw graph
+        sensor.draw(frame, args.alpha)
 
         # if detected:
         #     key = "{}/{}-gph.{}".format(incoming, filename, file_ext)
