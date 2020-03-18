@@ -59,8 +59,8 @@ def internet(host="8.8.8.8", port=53, timeout=1):
 
 class Sensor:
     def __init__(self, args, width, height):
-        self.min_temp = args.min_temp
-        self.max_temp = args.max_temp
+        self.min_temp = args.min
+        self.max_temp = args.max
 
         self.size = [int(width / 3), int(width / 3)]
         self.pixels = [self.size[0] / 32, self.size[1] / 32]
@@ -162,7 +162,7 @@ def main():
         frame_h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     print(frame_w, frame_h)
-    print(args.min_temp, args.max_temp)
+    print(args.min, args.max)
     print('Press "Esc", "q" or "Q" to exit.')
 
     incoming = "incoming"

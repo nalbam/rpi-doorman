@@ -58,8 +58,8 @@ class Sensor:
     def __init__(self, args, width, height):
         self.device = "/dev/spidev0.0"
 
-        self.min_temp = args.min_temp
-        self.max_temp = args.max_temp
+        self.min_temp = args.min
+        self.max_temp = args.max
 
         self.lepton_buf = np.zeros((120, 160, 1), dtype=np.uint16)
 
@@ -157,7 +157,7 @@ def main():
         frame_h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     print(frame_w, frame_h)
-    print(args.min_temp, args.max_temp)
+    print(args.min, args.max)
     print('Press "Esc", "q" or "Q" to exit.')
 
     incoming = "incoming"
