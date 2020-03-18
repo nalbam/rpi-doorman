@@ -26,14 +26,9 @@ import adafruit_amg88xx
 
 # low range of the sensor (this will be blue on the screen)
 MINTEMP = 22.0
-MINCOLOR = "indigo"
 
 # high range of the sensor (this will be red on the screen)
 MAXTEMP = 30.0
-MAXCOLOR = "red"
-
-# how many color values we can have
-COLORDEPTH = 1024
 
 
 # some utility functions
@@ -73,12 +68,6 @@ def run():
     width = 240
     height = 240
 
-    # the list of colors we can choose from
-    colors = list(Color(MINCOLOR).range_to(Color(MAXCOLOR), COLORDEPTH))
-
-    # create the array of colors
-    colors = [(int(c.red * 255), int(c.green * 255), int(c.blue * 255)) for c in colors]
-
     displayPixelWidth = width / 30
     displayPixelHeight = height / 30
 
@@ -113,7 +102,7 @@ def run():
         pixels = []
         for row in sensor.pixels:
             pixels = pixels + row
-        pixels = [map_value(p, MINTEMP, MAXTEMP, 0, COLORDEPTH - 1) for p in pixels]
+        pixels = [map_value(p, MINTEMP, MAXTEMP, 0, 255) for p in pixels]
 
         # perform interpolation
         bicubic = griddata(points, pixels, (grid_x, grid_y), method="cubic")
