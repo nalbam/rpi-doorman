@@ -39,6 +39,8 @@ def parse_args():
     p.add_argument("--width", type=int, default=160, help="width")
     p.add_argument("--height", type=int, default=120, help="height")
     p.add_argument("--pixel", type=int, default=3, help="pixel")
+    p.add_argument("--min", type=float, default=MINTEMP, help="min-temp")
+    p.add_argument("--max", type=float, default=MAXTEMP, help="max-temp")
     p.add_argument("--json-path", default=JSON_PATH, help="json path")
     return p.parse_args()
 
@@ -120,8 +122,8 @@ def main():
                 for ix, row in enumerate(pixels):
                     max_temp = max(max_temp, max(row))
 
-                pixels[0][0] = MAXTEMP
-                # pixels[0][1] = MINTEMP
+                pixels[0][0] = args.max
+                # pixels[0][1] = args.min
 
                 cv2.normalize(pixels, pixels, 0, 65535, cv2.NORM_MINMAX)
                 np.right_shift(pixels, 8, pixels)
@@ -145,7 +147,7 @@ def main():
                     ),
                 )
 
-        if max_temp > MAXTEMP:
+        if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
             data = {"filename": filename, "uploaded": False}
             save_json(args.json_path, data)
