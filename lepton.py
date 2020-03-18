@@ -27,15 +27,6 @@ MAXTEMP = 31000
 FRAME_RATE = 15
 
 
-# some utility functions
-def constrain(val, min_val, max_val):
-    return min(max_val, max(min_val, val))
-
-
-def map_value(x, in_min, in_max, out_min, out_max):
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-
-
 def get_color(v):
     i = min(255, max(0, int(v)))
     return (
@@ -48,35 +39,27 @@ def get_color(v):
 def run():
     device = "/dev/spidev0.0"
 
-    # a = np.zeros((240, 320, 3), dtype=np.uint8)
-    lepton_buf = np.zeros((120, 160, 1), dtype=np.uint16)
+    width = 160
+    height = 120
 
-    pixels = [160, 120]
-    length = pixels[0] * pixels[1]
+    pixels = np.zeros((height, width, 1), dtype=np.uint16)
+    # length = width * height
 
-    # pylint: disable=invalid-slice-index
-    points = [(math.floor(ix / pixels[1]), (ix % pixels[1])) for ix in range(0, length)]
-    grid_x, grid_y = np.mgrid[0:159:160j, 0:119:120j]
-    # pylint: enable=invalid-slice-index
+    pixel_width = 2
+    pixel_height = 2
 
-    width = pixels[0] * 4
-    height = pixels[1] * 4
-
-    displayPixelWidth = 4
-    displayPixelHeight = 4
+    screen_width = width * pixel_width
+    screen_height = height * pixel_height
 
     # pygame
     pygame.init()
 
     # clock = pygame.time.Clock()
 
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((screen_width, screen_height))
 
     screen.fill((0, 0, 0))
     pygame.display.update()
-
-    # let the sensor initialize
-    time.sleep(0.1)
 
     run = True
     while run:
@@ -92,29 +75,25 @@ def run():
         if run == False:
             break
 
-        # read the pixels
-        pixels = []
-
         try:
             with Lepton3(device) as l:
-                _, nr = l.capture(lepton_buf)
+                _, nr = l.capture(pixels)
 
-                # for ix, row in enumerate(lepton_buf):  # 120
+                # for ix, row in enumerate(pixels):  # 120
                 #     for jx, pixel in enumerate(row):  # 160
-                #         lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
+                #         pixels[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-                lepton_buf[0][0] = MAXTEMP
-                # lepton_buf[0][1] = MINTEMP
+                pixels[0][0] = MAXTEMP
+                # pixels[0][1] = MINTEMP
 
-                cv2.normalize(lepton_buf, lepton_buf, 0, 65535, cv2.NORM_MINMAX)
-
-                np.right_shift(lepton_buf, 8, lepton_buf)
+                cv2.normalize(pixels, pixels, 0, 65535, cv2.NORM_MINMAX)
+                np.right_shift(pixels, 8, pixels)
 
         except Exception:
             traceback.print_exc()
 
         # draw everything
-        for ix, row in enumerate(lepton_buf):  # 120
+        for ix, row in enumerate(pixels):  # 120
             for jx, pixel in enumerate(row):  # 160
                 color = get_color(pixel)
                 pygame.draw.rect(
@@ -122,10 +101,10 @@ def run():
                     color,
                     (
                         # left, top, width, height
-                        displayPixelWidth * jx,
-                        displayPixelHeight * ix,
-                        displayPixelWidth,
-                        displayPixelHeight,
+                        pixel_width * jx,
+                        pixel_height * ix,
+                        pixel_width,
+                        pixel_height,
                     ),
                 )
 
