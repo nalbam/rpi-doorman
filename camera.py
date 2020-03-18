@@ -115,7 +115,7 @@ def main():
 
         # upload
         data = load_json(args.json_path)
-        if data.uploaded == False:
+        if data["uploaded"] == False:
             save_json(args.json_path)
             upload(args, frame, data.filename)
 
