@@ -50,6 +50,7 @@ def save_json(json_path=JSON_PATH, data=None):
     with open(json_path, "w") as f:
         json.dump(data, f)
     f.close()
+    print(json.dumps(data))
 
 
 def internet(host="8.8.8.8", port=53, timeout=1):

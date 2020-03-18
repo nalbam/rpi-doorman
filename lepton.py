@@ -62,6 +62,7 @@ def save_json(json_path=JSON_PATH, data=None):
     with open(json_path, "w") as f:
         json.dump(data, f)
     f.close()
+    print(json.dumps(data))
 
 
 def get_color(v):
