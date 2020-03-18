@@ -110,7 +110,7 @@ class Sensor:
                 #     for jx, pixel in enumerate(row):  # 160
                 #         self.lepton_buf[ix][jx] = min(max(pixel, MINTEMP), MAXTEMP)
 
-                # self.lepton_buf[0][0] = MAXTEMP
+                self.lepton_buf[0][0] = MAXTEMP
                 # self.lepton_buf[0][1] = MINTEMP
 
                 cv2.normalize(
