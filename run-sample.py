@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
   This example is for Raspberry Pi (Linux) only!
   It will not work on microcontrollers running CircuitPython!
