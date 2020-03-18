@@ -45,8 +45,8 @@ def run():
     pixels = np.zeros((height, width, 1), dtype=np.uint16)
     # length = width * height
 
-    pixel_width = 2
-    pixel_height = 2
+    pixel_width = 3
+    pixel_height = 3
 
     screen_width = width * pixel_width
     screen_height = height * pixel_height
