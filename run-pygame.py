@@ -19,6 +19,8 @@ from scipy.interpolate import griddata
 
 from colour import Color
 
+from colormap import colormap
+
 import adafruit_amg88xx
 
 
@@ -41,6 +43,15 @@ def constrain(val, min_val, max_val):
 
 def map_value(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+
+def get_color(v):
+    i = min(255, max(0, int(v)))
+    return (
+        colormap[i * 3],
+        colormap[i * 3 + 1],
+        colormap[i * 3 + 2],
+    )
 
 
 def run():
@@ -112,7 +123,7 @@ def run():
             for jx, pixel in enumerate(row):
                 pygame.draw.rect(
                     screen,
-                    colors[constrain(int(pixel), 0, COLORDEPTH - 1)],
+                    get_color(pixel),
                     (
                         # left, top, width, height
                         displayPixelWidth * jx,

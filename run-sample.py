@@ -19,18 +19,15 @@ from scipy.interpolate import griddata
 
 from colour import Color
 
+from colormap import colormap
+
 # import adafruit_amg88xx
 
 # low range of the sensor (this will be blue on the screen)
 MINTEMP = 22.0
-MINCOLOR = "indigo"
 
 # high range of the sensor (this will be red on the screen)
 MAXTEMP = 30.0
-MAXCOLOR = "red"
-
-# how many color values we can have
-COLORDEPTH = 1024
 
 
 # some utility functions
@@ -40,6 +37,15 @@ def constrain(val, min_val, max_val):
 
 def map_value(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+
+def get_color(v):
+    i = min(255, max(0, int(v)))
+    return (
+        colormap[i * 3],
+        colormap[i * 3 + 1],
+        colormap[i * 3 + 2],
+    )
 
 
 def run():
@@ -60,12 +66,6 @@ def run():
     # sensor is an 8x8 grid so lets do a square
     width = 640
     height = 640
-
-    # the list of colors we can choose from
-    colors = list(Color(MINCOLOR).range_to(Color(MAXCOLOR), COLORDEPTH))
-
-    # create the array of colors
-    colors = [(int(c.red * 255), int(c.green * 255), int(c.blue * 255)) for c in colors]
 
     displayPixelWidth = width / 30
     displayPixelHeight = height / 30
@@ -104,7 +104,7 @@ def run():
         for temp in range(0, 64):
             pixels.append(MINTEMP + (temp / (MAXTEMP - MINTEMP)))
 
-        pixels = [map_value(p, MINTEMP, MAXTEMP, 0, COLORDEPTH - 1) for p in pixels]
+        pixels = [map_value(p, MINTEMP, MAXTEMP, 0, 255) for p in pixels]
 
         # perform interpolation
         bicubic = griddata(points, pixels, (grid_x, grid_y), method="cubic")
@@ -114,7 +114,7 @@ def run():
             for jx, pixel in enumerate(row):
                 pygame.draw.rect(
                     screen,
-                    colors[constrain(int(pixel), 0, COLORDEPTH - 1)],
+                    get_color(pixel),
                     (
                         # left, top, width, height
                         displayPixelWidth * jx,

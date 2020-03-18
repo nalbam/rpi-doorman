@@ -18,17 +18,14 @@ import adafruit_amg88xx
 from colour import Color
 from scipy.interpolate import griddata
 
+from colormap import colormap
+
 
 # low range of the sensor (this will be blue on the screen)
 MINTEMP = 22.0
-MINCOLOR = "indigo"
 
 # high range of the sensor (this will be red on the screen)
 MAXTEMP = 30.0
-MAXCOLOR = "red"
-
-# how many color values we can have
-COLORDEPTH = 1024
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
@@ -70,8 +67,6 @@ class Sensor:
         # self.start_pos = [0, int((height - self.size[1]) / 2)]
         self.start_pos = [0, 0]
 
-        self.colors = self.get_colors()
-
         # pylint: disable=invalid-slice-index
         self.points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]
         self.grid_x, self.grid_y = np.mgrid[0:7:32j, 0:7:32j]
@@ -83,15 +78,6 @@ class Sensor:
         self.sensor = adafruit_amg88xx.AMG88XX(self.i2c_bus)
 
         self.temps = []
-
-    def get_colors(self):
-        # the list of colors we can choose from
-        colors = list(Color(MINCOLOR).range_to(Color(MAXCOLOR), COLORDEPTH))
-
-        # create the array of colors
-        return [
-            (int(c.red * 255), int(c.green * 255), int(c.blue * 255)) for c in colors
-        ]
 
     def get_position(self, i, j):
         pt1 = (
@@ -105,8 +91,12 @@ class Sensor:
         return pt1, pt2
 
     def get_color(self, v):
-        i = COLORDEPTH - min(COLORDEPTH, max(1, int(v)))
-        return self.colors[i]
+        i = min(255, max(0, int(v)))
+        return (
+            colormap[i * 3],
+            colormap[i * 3 + 1],
+            colormap[i * 3 + 2],
+        )
 
     def map_value(self, x, in_min, in_max, out_min, out_max):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
@@ -120,7 +110,7 @@ class Sensor:
             pixels = pixels + row
 
         # pixels = [
-        #     self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
+        #     self.map_value(p, self.min_temp, self.max_temp, 0, 255)
         #     for p in pixels
         # ]
 
@@ -129,7 +119,7 @@ class Sensor:
             if p > self.max_temp:
                 detected = True
 
-            temp = self.map_value(p, self.min_temp, self.max_temp, 0, COLORDEPTH - 1)
+            temp = self.map_value(p, self.min_temp, self.max_temp, 0, 255)
 
             self.temps.append(temp)
 
