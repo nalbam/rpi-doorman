@@ -117,7 +117,7 @@ def main():
         data = load_json(args.json_path)
         if data["uploaded"] == False:
             save_json(args.json_path)
-            upload(args, frame, data.filename)
+            upload(args, frame, data["filename"])
 
         if args.mirror:
             # Invert left and right
