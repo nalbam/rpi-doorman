@@ -158,16 +158,16 @@ def main():
     sensor = Sensor(args)
 
     while True:
+        filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
+
+        # temp detect
+        detected = sensor.detect()
+
         # Grab a single frame of video
         ret, frame = cap.read()
 
         # Invert left and right
         frame = cv2.flip(frame, 1)
-
-        filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
-
-        # temp detect
-        detected = sensor.detect()
 
         if detected:
             if os.path.isdir(incoming) == False:
