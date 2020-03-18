@@ -10,6 +10,8 @@ import socket
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
+JSON_PATH = os.environ.get("JSON_PATH", "~/.doorman.json")
+
 
 # Setup the S3 client
 s3 = boto3.client("s3")
@@ -23,7 +25,27 @@ def parse_args():
     p.add_argument("-m", "--mirror", action="store_true", help="mirror")
     p.add_argument("--width", type=int, default=0, help="width")
     p.add_argument("--height", type=int, default=0, help="height")
+    p.add_argument("--json-path", default=JSON_PATH, help="json path")
     return p.parse_args()
+
+
+def load_json(json_path=JSON_PATH):
+    if os.path.isfile(json_path):
+        f = open(json_path)
+        data = json.load(f)
+        f.close()
+    else:
+        data = {"filename": "", "uploaded": False}
+        save_json(json_path, data)
+    return data
+
+
+def save_json(json_path=JSON_PATH, data=None):
+    if data == None:
+        data = {"filename": "", "uploaded": False}
+    with open(json_path, "w") as f:
+        json.dump(data, f)
+    f.close()
 
 
 def internet(host="8.8.8.8", port=53, timeout=1):
@@ -47,10 +69,11 @@ def upload(args, frame, filename=""):
         filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
     key = "{}/{}.{}".format(incoming, filename, file_ext)
 
-    cv2.imwrite(key, frame)
-
     if internet():
         try:
+            # save to local
+            cv2.imwrite(key, frame)
+
             # create a s3 file key
             _, jpg_data = cv2.imencode(".jpg", frame)
             res = s3.put_object(
@@ -82,9 +105,6 @@ def main():
     print(frame_w, frame_h)
     print('Press "Esc", "q" or "Q" to exit.')
 
-    detected = False
-    filename = ""
-
     while True:
         # Grab a single frame of video
         ret, frame = cap.read()
@@ -92,11 +112,11 @@ def main():
         # Invert left and right
         frame = cv2.flip(frame, 1)
 
-        # temp detect
-        detected = False
-
-        if detected:
-            filename = upload(args, frame)
+        # upload
+        data = load_json(args.json_path)
+        if data.uploaded == False:
+            save_json(args.json_path)
+            upload(args, frame, data.filename)
 
         if args.mirror:
             # Invert left and right
