@@ -112,10 +112,11 @@ def run():
                     lcd,
                     colors[constrain(int(pixel), 0, COLORDEPTH - 1)],
                     (
-                        displayPixelHeight * ix,
+                        # left, top, width, height
                         displayPixelWidth * jx,
-                        displayPixelHeight,
+                        displayPixelHeight * ix,
                         displayPixelWidth,
+                        displayPixelHeight,
                     ),
                 )
 
