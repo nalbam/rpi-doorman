@@ -71,14 +71,14 @@ def run():
     displayPixelWidth = width / 30
     displayPixelHeight = height / 30
 
-    lcd = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((width, height))
 
-    lcd.fill((255, 0, 0))
-    pygame.display.update()
+    # screen.fill((255, 0, 0))
+    # pygame.display.update()
 
-    pygame.mouse.set_visible(False)
+    # pygame.mouse.set_visible(False)
 
-    lcd.fill((0, 0, 0))
+    screen.fill((0, 0, 0))
     pygame.display.update()
 
     # let the sensor initialize
@@ -111,7 +111,7 @@ def run():
         for ix, row in enumerate(bicubic):
             for jx, pixel in enumerate(row):
                 pygame.draw.rect(
-                    lcd,
+                    screen,
                     colors[constrain(int(pixel), 0, COLORDEPTH - 1)],
                     (
                         # left, top, width, height
