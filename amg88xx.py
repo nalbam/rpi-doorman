@@ -48,7 +48,7 @@ def get_color(v):
     )
 
 
-def run():
+def main():
     os.putenv("SDL_FBDEV", "/dev/fb1")
 
     pygame.init()
@@ -131,4 +131,5 @@ def run():
     pygame.quit()
 
 
-run()
+if __name__ == "__main__":
+    main()
