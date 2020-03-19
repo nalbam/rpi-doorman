@@ -35,7 +35,6 @@ JSON_PATH = os.environ.get("JSON_PATH", "{}/.doorman.json".format(HOME))
 
 def parse_args():
     p = argparse.ArgumentParser(description="doorman")
-    p.add_argument("--device", default="/dev/spidev0.0", help="device")
     p.add_argument("--width", type=int, default=160, help="width")
     p.add_argument("--height", type=int, default=120, help="height")
     p.add_argument("--pixel", type=int, default=3, help="pixel")
@@ -77,18 +76,18 @@ def get_color(v):
 def main():
     args = parse_args()
 
-    device = args.device
+    device = "/dev/spidev0.0"
 
     width = args.width
     height = args.height
-
-    pixels = np.zeros((height, width, 1), dtype=np.uint16)
 
     pixel_width = args.pixel
     pixel_height = args.pixel
 
     screen_width = width * pixel_width
     screen_height = height * pixel_height
+
+    pixels = np.zeros((height, width, 1), dtype=np.uint16)
 
     # pygame
     pygame.init()
@@ -148,7 +147,7 @@ def main():
                     ),
                 )
 
-        print(args.max, max_temp)
+        # print(args.max, max_temp)
 
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")

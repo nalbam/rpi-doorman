@@ -5,15 +5,17 @@
   It will not work on microcontrollers running CircuitPython!
 """
 
-import os
+import argparse
 import math
+import numpy as np
+import os
+import pygame
 import time
 
 import busio
 import board
 
-import numpy as np
-import pygame
+import adafruit_amg88xx
 
 from scipy.interpolate import griddata
 
@@ -21,13 +23,50 @@ from colour import Color
 
 from colormap import colormap
 
-import adafruit_amg88xx
+from pathlib import Path
+
+HOME = str(Path.home())
 
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 22.0
+MINTEMP = 18.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 30.0
+MAXTEMP = 26.0
+
+FRAME_RATE = 15
+
+JSON_PATH = os.environ.get("JSON_PATH", "{}/.doorman.json".format(HOME))
+
+
+def parse_args():
+    p = argparse.ArgumentParser(description="doorman")
+    # p.add_argument("--width", type=int, default=8, help="width")
+    # p.add_argument("--height", type=int, default=8, help="height")
+    # p.add_argument("--pixel", type=int, default=50, help="pixel")
+    p.add_argument("--min", type=float, default=MINTEMP, help="min-temp")
+    p.add_argument("--max", type=float, default=MAXTEMP, help="max-temp")
+    p.add_argument("--json-path", default=JSON_PATH, help="json path")
+    return p.parse_args()
+
+
+def load_json(json_path=JSON_PATH):
+    if os.path.isfile(json_path):
+        f = open(json_path)
+        data = json.load(f)
+        f.close()
+    else:
+        data = {"filename": "", "uploaded": False}
+        save_json(json_path, data)
+    return data
+
+
+def save_json(json_path=JSON_PATH, data=None):
+    if data == None:
+        data = {"filename": "", "uploaded": False}
+    with open(json_path, "w") as f:
+        json.dump(data, f)
+    f.close()
+    print(json.dumps(data))
 
 
 # some utility functions
@@ -49,39 +88,42 @@ def get_color(v):
 
 
 def main():
-    os.putenv("SDL_FBDEV", "/dev/fb1")
+    args = parse_args()
 
-    pygame.init()
+    # os.putenv("SDL_FBDEV", "/dev/fb1")
 
-    i2c_bus = busio.I2C(board.SCL, board.SDA)
+    width = 8
+    height = 8
 
-    # initialize the sensor
-    sensor = adafruit_amg88xx.AMG88XX(i2c_bus)
+    pixel_width = 10
+    pixel_height = 10
+
+    screen_width = int(width * pixel_width * 4)
+    screen_height = int(height * pixel_height * 4)
 
     # pylint: disable=invalid-slice-index
     points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]
     grid_x, grid_y = np.mgrid[0:7:32j, 0:7:32j]
     # pylint: enable=invalid-slice-index
 
-    # sensor is an 8x8 grid so lets do a square
-    width = 640
-    height = 640
+    # i2c_bus
+    i2c_bus = busio.I2C(board.SCL, board.SDA)
 
-    displayPixelWidth = width / 30
-    displayPixelHeight = height / 30
-
-    screen = pygame.display.set_mode((width, height))
-
-    # screen.fill((255, 0, 0))
-    # pygame.display.update()
-
-    # pygame.mouse.set_visible(False)
-
-    screen.fill((0, 0, 0))
-    pygame.display.update()
+    # initialize the sensor
+    sensor = adafruit_amg88xx.AMG88XX(i2c_bus)
 
     # let the sensor initialize
     time.sleep(0.1)
+
+    # pygame
+    pygame.init()
+
+    clock = pygame.time.Clock()
+
+    screen = pygame.display.set_mode((screen_width, screen_height))
+
+    screen.fill((0, 0, 0))
+    pygame.display.update()
 
     run = True
     while run:
@@ -99,11 +141,12 @@ def main():
 
         # read the pixels
         pixels = []
-
         # for temp in range(0, 64):
         #     pixels.append(MINTEMP + (temp / (MAXTEMP - MINTEMP)))
         for row in sensor.pixels:
             pixels = pixels + row
+
+        max_temp = max(pixels)
 
         pixels = [map_value(p, MINTEMP, MAXTEMP, 0, 255) for p in pixels]
 
@@ -119,14 +162,22 @@ def main():
                     color,
                     (
                         # left, top, width, height
-                        displayPixelWidth * ix,
-                        displayPixelHeight * jx,
-                        displayPixelWidth,
-                        displayPixelHeight,
+                        pixel_width * ix,
+                        pixel_height * jx,
+                        pixel_width,
+                        pixel_height,
                     ),
                 )
 
+        # print(args.max, max_temp)
+
+        if max_temp > args.max:
+            filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
+            data = {"filename": filename, "uploaded": False}
+            save_json(args.json_path, data)
+
         pygame.display.update()
+        clock.tick(FRAME_RATE)
 
     pygame.quit()
 

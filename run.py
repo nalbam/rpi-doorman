@@ -103,6 +103,7 @@ class Sensor:
         self.grid_x, self.grid_y = np.mgrid[0:7:32j, 0:7:32j]
         # pylint: enable=invalid-slice-index
 
+        # i2c_bus
         self.i2c_bus = busio.I2C(board.SCL, board.SDA)
 
         # initialize the sensor
@@ -139,11 +140,6 @@ class Sensor:
         pixels = []
         for row in self.sensor.pixels:
             pixels = pixels + row
-
-        # pixels = [
-        #     self.map_value(p, self.min_temp, self.max_temp, 0, 255)
-        #     for p in pixels
-        # ]
 
         self.temps = []
         for p in pixels:
