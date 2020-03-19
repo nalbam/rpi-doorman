@@ -20,12 +20,11 @@ from scipy.interpolate import griddata
 
 from colormap import colormap
 
-
 # low range of the sensor (this will be blue on the screen)
-MINTEMP = 22.0
+MINTEMP = 18.0
 
 # high range of the sensor (this will be red on the screen)
-MAXTEMP = 30.0
+MAXTEMP = 26.0
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
 
