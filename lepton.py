@@ -42,6 +42,7 @@ def parse_args():
     p.add_argument("--pixel", type=int, default=3, help="pixel")
     p.add_argument("--min", type=float, default=MINTEMP, help="min-temp")
     p.add_argument("--max", type=float, default=MAXTEMP, help="max-temp")
+    p.add_argument("--debug", action="store_true", help="debug")
     p.add_argument("--json-path", default=JSON_PATH, help="json path")
     return p.parse_args()
 
@@ -125,7 +126,7 @@ def main():
 
         try:
             with Lepton3(device) as l:
-                _, nr = l.capture(pixels, True)
+                _, nr = l.capture(pixels, args.debug)
 
                 for ix, row in enumerate(pixels):
                     max_temp = max(max_temp, max(row))
