@@ -119,7 +119,8 @@ def main():
         if run == False:
             break
 
-        max_temp = 0
+        max_temp = float("-inf")
+        min_temp = float("inf")
 
         try:
             with Lepton3(device) as l:
@@ -127,6 +128,7 @@ def main():
 
                 for ix, row in enumerate(pixels):
                     max_temp = max(max_temp, max(row))
+                    min_temp = min(min_temp, min(row))
 
                 pixels[0][0] = args.max
                 # pixels[0][1] = args.min
@@ -153,7 +155,7 @@ def main():
                     ),
                 )
 
-        # print(args.max, max_temp)
+        print(args.min, min_temp, max_temp, args.max)
 
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
