@@ -7,6 +7,7 @@
 
 import argparse
 import datetime
+import json
 import math
 import numpy as np
 import os
@@ -101,6 +102,10 @@ def main():
 
     screen_width = int(width * pixel_width * 4)
     screen_height = int(height * pixel_height * 4)
+
+    print(screen_width, screen_height)
+    print(args.min, args.max)
+    print('Press "Esc", "q" or "Q" to exit.')
 
     # pylint: disable=invalid-slice-index
     points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0, 64)]

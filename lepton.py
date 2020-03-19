@@ -8,6 +8,7 @@
 import argparse
 import cv2
 import datetime
+import json
 import math
 import numpy as np
 import os
@@ -89,6 +90,10 @@ def main():
     screen_height = height * pixel_height
 
     pixels = np.zeros((height, width, 1), dtype=np.uint16)
+
+    print(screen_width, screen_height)
+    print(args.min, args.max)
+    print('Press "Esc", "q" or "Q" to exit.')
 
     # pygame
     pygame.init()
