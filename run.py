@@ -54,7 +54,7 @@ def internet(host="8.8.8.8", port=53, timeout=1):
         return True
     except socket.error as ex:
         print(ex)
-        return False
+    return False
 
 
 def upload(args, frame, filename=""):
