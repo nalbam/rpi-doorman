@@ -125,7 +125,7 @@ def main():
 
         try:
             with Lepton3(device) as l:
-                _, nr = l.capture(pixels)
+                _, nr = l.capture(pixels, True)
 
                 for ix, row in enumerate(pixels):
                     max_temp = max(max_temp, max(row))
