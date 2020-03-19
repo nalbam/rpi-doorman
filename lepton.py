@@ -119,6 +119,7 @@ def main():
         if run == False:
             break
 
+        nr = 0
         max_temp = float("-inf")
         min_temp = float("inf")
 
@@ -130,7 +131,7 @@ def main():
                     max_temp = max(max_temp, max(row))
                     min_temp = min(min_temp, min(row))
 
-                pixels[0][0] = args.max
+                # pixels[0][0] = args.max
                 # pixels[0][1] = args.min
 
                 cv2.normalize(pixels, pixels, 0, 65535, cv2.NORM_MINMAX)
@@ -155,7 +156,7 @@ def main():
                     ),
                 )
 
-        print(args.min, min_temp, max_temp, args.max)
+        print(nr, args.min, min_temp, max_temp, args.max)
 
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
