@@ -120,7 +120,8 @@ def main():
         # upload
         data = load_json(args.json_path)
         if data["filename"] != "" and data["uploaded"] == False:
-            save_json(args.json_path)
+            data["uploaded"] = True
+            save_json(args.json_path, data)
             upload(args, frame, data["filename"])
 
         if args.mirror:
