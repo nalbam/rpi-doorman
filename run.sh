@@ -47,7 +47,7 @@ _error() {
 }
 
 _status() {
-    PID=$(ps -ef | grep python3 | grep " run[.]py" | head -1 | awk '{print $2}' | xargs)
+    PID=$(ps -ef | grep python3 | grep " camera[.]py" | head -1 | awk '{print $2}' | xargs)
     if [ "${PID}" != "" ]; then
         _result "${NAME} is running: ${PID}"
     else
