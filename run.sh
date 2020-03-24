@@ -74,7 +74,7 @@ _start() {
     pushd ${SHELL_DIR}
     _command "python3 camera.py"
     # nohup python3 camera.py &
-    nohup python3 camera.py > log.out &
+    nohup python3 camera.py >> log.out &
     popd
 
     _status
