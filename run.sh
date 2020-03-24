@@ -72,9 +72,9 @@ _start() {
     fi
 
     pushd ${SHELL_DIR}
-    _command "python3 run.py"
-    # nohup python3 run.py &
-    nohup python3 run.py > /dev/null 2>&1 &
+    _command "python3 camera.py"
+    # nohup python3 camera.py &
+    nohup python3 camera.py > /dev/null 2>&1 &
     popd
 
     _status
