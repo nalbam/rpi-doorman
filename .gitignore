@@ -48,3 +48,4 @@ package-lock.json
 .serverless
 
 data.json
+log.out
