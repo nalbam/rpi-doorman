@@ -30,7 +30,7 @@ pip3 install adafruit-circuitpython-amg88xx
 ### for Windows in vs-code terminal
 
 ```bash
-& C:/Users/username/AppData/Local/Programs/Python/Python37/python.exe -m pip install boto3
+py3 -m pip install boto3
 ```
 
 ## Test
@@ -42,7 +42,9 @@ sudo i2cdetect -y 1
 ## Run
 
 ```bash
-python3 ./rpi-doorman/run.py --min-temp 18 --max-temp 26 --bucket-name <DOORMAN-BUCKET-NAME>
+python3 ./rpi-doorman/camera.py --bucket-name <DOORMAN-BUCKET-NAME>
+
+python3 ./rpi-doorman/amg88xx.py --min 18 --max 26
 ```
 
 * <https://learn.adafruit.com/adafruit-amg8833-8x8-thermal-camera-sensor/python-circuitpython>
