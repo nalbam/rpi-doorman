@@ -42,7 +42,9 @@ sudo i2cdetect -y 1
 ## Run
 
 ```bash
-python3 ./rpi-doorman/camera.py --bucket-name <DOORMAN-BUCKET-NAME>
+export BUCKET_NAME="deeplens-doorman-demo"
+
+python3 ./rpi-doorman/camera.py --bucket-name ${BUCKET_NAME}
 
 python3 ./rpi-doorman/amg88xx.py --min 18 --max 26
 ```
