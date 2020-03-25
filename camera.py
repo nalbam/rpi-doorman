@@ -39,7 +39,7 @@ def load_json(json_path=JSON_PATH):
         data = json.load(f)
         f.close()
     else:
-        data = {"filename": "", "uploaded": False}
+        data = {"filename": "", "temperature": 0, "uploaded": False}
         save_json(json_path, data)
     return data
 
@@ -63,24 +63,25 @@ def internet(host="8.8.8.8", port=53, timeout=1):
     return False
 
 
-def upload(args, frame, filename=""):
-    incoming = "incoming"
-    file_ext = "jpg"
+def capture(args, frame, filename=""):
+    path = "incoming"
 
-    if os.path.isdir(incoming) == False:
-        os.mkdir(incoming)
+    if os.path.isdir(path) == False:
+        os.mkdir(path)
 
     if filename == "":
         filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
-    key = "{}/{}.{}".format(incoming, filename, file_ext)
 
-    if internet():
-        try:
-            # save to local
-            cv2.imwrite(key, frame)
+    key = "incoming/{}.jpg".format(path, filename)
 
-            # create a s3 file key
-            _, jpg_data = cv2.imencode(".jpg", frame)
+    try:
+        # save to local
+        cv2.imwrite(key, frame)
+
+        # create a s3 file key
+        _, jpg_data = cv2.imencode(".jpg", frame)
+
+        if internet():
             res = s3.put_object(
                 Bucket=args.bucket_name,
                 Key=key,
@@ -88,8 +89,8 @@ def upload(args, frame, filename=""):
                 ACL="public-read",
             )
             print(res)
-        except Exception as ex:
-            print("Error", ex)
+    except Exception as ex:
+        print("Error", ex)
 
     return filename
 
@@ -122,7 +123,7 @@ def main():
         if data["filename"] != "" and data["uploaded"] == False:
             data["uploaded"] = True
             save_json(args.json_path, data)
-            upload(args, frame, data["filename"])
+            capture(args, frame, data["filename"])
 
         if args.mirror:
             # Invert left and right

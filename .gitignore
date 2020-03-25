@@ -49,3 +49,6 @@ package-lock.json
 
 data.json
 log.out
+
+incoming/
+json/
