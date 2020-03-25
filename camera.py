@@ -72,7 +72,7 @@ def capture(args, frame, filename=""):
     if filename == "":
         filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
 
-    key = "incoming/{}.jpg".format(path, filename)
+    key = "{}/{}.jpg".format(path, filename)
 
     try:
         # save to local
