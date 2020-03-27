@@ -161,7 +161,7 @@ def main():
 
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
-            data = {"filename": "", "temperature": 0, "uploaded": False}
+            data = {"filename": filename, "temperature": max_temp, "uploaded": False}
             save_json(args.json_path, data)
 
         pygame.display.update()
