@@ -6,6 +6,7 @@
 """
 
 import argparse
+import boto3
 import datetime
 import json
 import math
@@ -38,11 +39,18 @@ MAXTEMP = 26.0
 
 FRAME_RATE = 15
 
+BUCKET_NAME = os.environ.get("BUCKET_NAME", "deeplens-doorman-demo")
+
 JSON_PATH = os.environ.get("JSON_PATH", "{}/.doorman.json".format(HOME))
+
+
+# Setup the S3 client
+s3 = boto3.client("s3")
 
 
 def parse_args():
     p = argparse.ArgumentParser(description="doorman")
+    p.add_argument("-b", "--bucket-name", default=BUCKET_NAME, help="bucket name")
     # p.add_argument("--width", type=int, default=8, help="width")
     # p.add_argument("--height", type=int, default=8, help="height")
     # p.add_argument("--pixel", type=int, default=50, help="pixel")
