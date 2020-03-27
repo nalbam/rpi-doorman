@@ -152,6 +152,7 @@ def main():
         for row in sensor.pixels:
             pixels = pixels + row
 
+        min_temp = min(pixels)
         max_temp = max(pixels)
 
         pixels = [map_value(p, MINTEMP, MAXTEMP, 0, 255) for p in pixels]
@@ -175,7 +176,7 @@ def main():
                     ),
                 )
 
-        # print(args.max, max_temp)
+        print(min_temp, max_temp)
 
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
