@@ -189,7 +189,7 @@ def main():
                     ),
                 )
 
-        print(min_temp, max_temp)
+        print("{:2.1f} {:2.1f}".format(min_temp, max_temp))
 
         if max_temp > args.max:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
