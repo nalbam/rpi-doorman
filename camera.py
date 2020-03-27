@@ -7,6 +7,7 @@ import datetime
 import json
 import os
 import socket
+import traceback
 
 from pathlib import Path
 
@@ -34,19 +35,23 @@ def parse_args():
 
 
 def load_json(json_path=JSON_PATH):
-    if os.path.isfile(json_path):
-        f = open(json_path)
-        data = json.load(f)
-        f.close()
-    else:
-        data = {"filename": "", "temperature": 0, "uploaded": False}
-        save_json(json_path, data)
+    try:
+        if os.path.isfile(json_path):
+            f = open(json_path)
+            data = json.load(f)
+            f.close()
+            return data
+    except Exception:
+        traceback.print_exc()
+
+    data = {"filename": "", "temperature": 0, "uploaded": False}
+    save_json(json_path, data)
     return data
 
 
 def save_json(json_path=JSON_PATH, data=None):
     if data == None:
-        data = {"filename": "", "uploaded": False}
+        data = {"filename": "", "temperature": 0, "uploaded": False}
     with open(json_path, "w") as f:
         json.dump(data, f)
     f.close()
