@@ -146,6 +146,8 @@ def main():
 
     run = True
     while run:
+        capture = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -154,6 +156,8 @@ def main():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE] or keys[pygame.K_q]:
             run = False
+        elif keys[pygame.K_c]:
+            capture = True
 
         if run == False:
             break
@@ -191,7 +195,7 @@ def main():
 
         print("{:2.1f} {:2.1f}".format(min_temp, max_temp))
 
-        if max_temp > args.max:
+        if max_temp > args.max or capture:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
             data = {"filename": filename, "temperature": max_temp, "uploaded": False}
             save_json(args.json_path, data)
