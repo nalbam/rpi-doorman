@@ -8,6 +8,7 @@ import json
 import os
 import socket
 import traceback
+import uuid
 
 from pathlib import Path
 
@@ -34,6 +35,11 @@ def parse_args():
     return p.parse_args()
 
 
+def new_json():
+    uuid = uuid.uuid4()
+    return {"uuid": uuid, "filename": "", "temperature": 0, "uploaded": False}
+
+
 def load_json(json_path=JSON_PATH):
     try:
         if os.path.isfile(json_path):
@@ -44,14 +50,14 @@ def load_json(json_path=JSON_PATH):
     except Exception:
         traceback.print_exc()
 
-    data = {"filename": "", "temperature": 0, "uploaded": False}
+    data = new_json()
     save_json(json_path, data)
     return data
 
 
 def save_json(json_path=JSON_PATH, data=None):
     if data == None:
-        data = {"filename": "", "temperature": 0, "uploaded": False}
+        data = new_json()
     with open(json_path, "w") as f:
         json.dump(data, f)
     f.close()
