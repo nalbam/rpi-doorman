@@ -60,25 +60,29 @@ def parse_args():
     return p.parse_args()
 
 
-def load_json(json_path=JSON_PATH):
+def new_json(args):
+    return {"filename": "", "temperature": 0, "uploaded": False}
+
+
+def load_json(args):
     try:
-        if os.path.isfile(json_path):
-            f = open(json_path)
+        if os.path.isfile(args.json_path):
+            f = open(args.json_path)
             data = json.load(f)
             f.close()
             return data
     except Exception:
         traceback.print_exc()
 
-    data = {"filename": "", "temperature": 0, "uploaded": False}
-    save_json(json_path, data)
+    data = new_json(args)
+    save_json(args, data)
     return data
 
 
-def save_json(json_path=JSON_PATH, data=None):
+def save_json(args, data=None):
     if data == None:
-        data = {"filename": "", "temperature": 0, "uploaded": False}
-    with open(json_path, "w") as f:
+        data = new_json()
+    with open(args.json_path, "w") as f:
         json.dump(data, f)
     f.close()
     print(json.dumps(data))
@@ -198,7 +202,7 @@ def main():
         if max_temp > args.max or capture:
             filename = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S-%f")
             data = {"filename": filename, "temperature": max_temp, "uploaded": False}
-            save_json(args.json_path, data)
+            save_json(args, data)
 
         pygame.display.update()
         clock.tick(FRAME_RATE)

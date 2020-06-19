@@ -8,7 +8,6 @@ import json
 import os
 import socket
 import traceback
-import uuid
 
 from pathlib import Path
 
@@ -35,30 +34,29 @@ def parse_args():
     return p.parse_args()
 
 
-def new_json():
-    uuid = uuid.uuid4()
-    return {"uuid": uuid, "filename": "", "temperature": 0, "uploaded": False}
+def new_json(args):
+    return {"filename": "", "temperature": 0, "uploaded": False}
 
 
-def load_json(json_path=JSON_PATH):
+def load_json(args):
     try:
-        if os.path.isfile(json_path):
-            f = open(json_path)
+        if os.path.isfile(args.json_path):
+            f = open(args.json_path)
             data = json.load(f)
             f.close()
             return data
     except Exception:
         traceback.print_exc()
 
-    data = new_json()
-    save_json(json_path, data)
+    data = new_json(args)
+    save_json(args, data)
     return data
 
 
-def save_json(json_path=JSON_PATH, data=None):
+def save_json(args, data=None):
     if data == None:
         data = new_json()
-    with open(json_path, "w") as f:
+    with open(args.json_path, "w") as f:
         json.dump(data, f)
     f.close()
     print(json.dumps(data))
@@ -130,10 +128,10 @@ def main():
         frame = cv2.flip(frame, 1)
 
         # upload
-        data = load_json(args.json_path)
+        data = load_json(args)
         if data["filename"] != "" and data["uploaded"] == False:
             data["uploaded"] = True
-            save_json(args.json_path, data)
+            save_json(args, data)
             capture(args, frame, data["filename"])
 
         if args.mirror:
